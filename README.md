@@ -20,7 +20,6 @@ contudo a aplicação não se limite a crianãs, podendo ser para adultos també
 <br>
 
 ### Cadastro
-<br>
 O primeiro passo para acessar o sistema é fazer cadastro do usuario. Segue um exemplo de arquivo JSON para cadastro do usuario:
 
 Link: (pendente)
