@@ -17,60 +17,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.almanak.almanakApi.model.Usuario;
-import br.com.almanak.almanakApi.service.UsuarioService;
+import br.com.almanak.almanakApi.model.Plano;
+import br.com.almanak.almanakApi.service.PlanoService;
 
-@RestController
-@RequestMapping("/api/usuario")
-public class UsuarioController {
+// @RestController
+@RequestMapping("/api/plano")
+public class PlanoController {
 
     @Autowired
-    private UsuarioService service;
-
+    private PlanoService service;
+ 
     @GetMapping
-    public List<Usuario> index(){
+    public List<Plano> index(){
         return service.listAll();
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Usuario> show(@PathVariable Integer id){
-        return ResponseEntity.of(service.getById(id));
-    }
-
-    @GetMapping("adj/id/{id}")
-    public ResponseEntity<Usuario> showAdj(@PathVariable Integer id){
-        return ResponseEntity.of(service.getByIdAdj(id));
-    }
-
-    @GetMapping("adj/email/{email}")
-    public ResponseEntity<Usuario> showByEmailAdj(@PathVariable String email){
-        return ResponseEntity.of(service.getByEmailAdj(email));
-    }
-
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody @Valid Usuario usuario){
-        service.save(usuario);
+    public ResponseEntity<Plano> create(@RequestBody @Valid Plano plano){
+        service.save(plano);
         
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(usuario);
+                .body(plano);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
+    public ResponseEntity<Plano> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
         var optional = service.getById(id);
 
         if(optional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        var usuario = optional.get();
-        BeanUtils.copyProperties(newUsuario, usuario);
-        usuario.setId(id);
+        var plano = optional.get();
+        BeanUtils.copyProperties(newPlano, plano);
+        plano.setId(id);
 
-        service.save(usuario);
-        return ResponseEntity.ok(usuario);
+        service.save(plano);
+        return ResponseEntity.ok(plano);
     }
-
 
     @DeleteMapping("{id}")
     public ResponseEntity<Object> destroy(@PathVariable Integer id){
@@ -82,5 +66,5 @@ public class UsuarioController {
         service.remove(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
+
 }

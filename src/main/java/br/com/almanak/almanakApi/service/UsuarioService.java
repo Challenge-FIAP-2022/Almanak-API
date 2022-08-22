@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,23 +19,27 @@ public class UsuarioService {
     public List<Usuario> listAll(){
         return repository.findAll();
     }
-
-    public void save(Usuario usuario){
-        repository.save(usuario);
-    }
-
-    public void remove(Integer id){
-        repository.deleteById(id);
-    }
-
+    
     public Optional<Usuario> getById(Integer id){
         return repository.findById(id);
     }
 
     public Optional<Usuario> getByIdAdj(Integer id){
-        Optional<Usuario> usuario = repository.findById(id);
-        usuario = Optional.of(usuario.get().ajustar());
-        return usuario;
+        return Optional.of(repository.findById(id).get().ajustar());
+    }
+
+    public Optional<Usuario> getByEmailAdj(String email){
+        return Optional.of(repository.findByEmail(email).get(0).ajustar());
+    }
+
+    public void save(Usuario usuario){
+        if(usuario.getDtRegistro() == null)
+            usuario.setDtRegistro(LocalDateTime.now());
+        repository.save(usuario);
+    }
+
+    public void remove(Integer id){
+        repository.deleteById(id);
     }
 
 }
