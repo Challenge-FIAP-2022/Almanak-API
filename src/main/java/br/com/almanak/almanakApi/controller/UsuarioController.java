@@ -94,11 +94,15 @@ public class UsuarioController {
     public ResponseEntity<Usuario> destroy(@PathVariable Integer id){
         var optional = service.getById(id);
 
-        if(optional.isEmpty())
+        if(optional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            
+            // service.remove(id);
+            // return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
 
-        service.remove(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
 }
