@@ -32,7 +32,7 @@ public class Usuario {
     @GeneratedValue(generator="usuario", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @NotNull
+    @NotBlank
     @Size(max=50)
     @Column(name="nm_usuario")
     private String name;
@@ -47,53 +47,58 @@ public class Usuario {
     @Column(name="ds_senha")
     private String senha;
 
-    @NotNull
+    @NotBlank
     @Column(name="dt_nascimento")
     private LocalDate dtNascimento;
 
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
+    @Transient
+    private boolean maioridade;
+
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
     private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
 
-    @Transient
-    private boolean maioridade;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    private List<Atividade> atividades = new ArrayList<Atividade>();
+
 
     public Usuario ajustar(){
-        Usuario usuario = this;
-        
         this.setMaioridade();
-        usuario.id = id;
-        usuario.name = null;
-        usuario.email = null;
-        usuario.senha = null;
-        usuario.dtNascimento = null;
-        usuario.dtRegistro = null;
-        usuario.listPlanoUsuario = null;
-        usuario.maioridade = this.maioridade;
+
+        Usuario usuario = new Usuario();
+        usuario.setId(this.id);
+        usuario.setMaioridade(this.maioridade);
         
         return usuario;
     
     }
 
-    public void addPlano(PlanoUsuarioRel planoUsuario){
+    public void addToList(PlanoUsuarioRel planoUsuario){
         planoUsuario.setUsuario(this);
         this.getListPlanoUsuario().add(planoUsuario);
     }
 
-    public Usuario(Integer id, @NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro,
-            List<PlanoUsuarioRel> listPlanoUsuario, boolean maioridade) {
+    public void addToList(Atividade atividade){
+        atividade.setUsuario(this);
+        this.getAtividades().add(atividade);
+    }
+
+    public Usuario(Integer id, @NotBlank @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @NotNull @Size(max = 20) String senha, @NotBlank LocalDate dtNascimento, LocalDateTime dtRegistro,
+            boolean maioridade, List<PlanoUsuarioRel> listPlanoUsuario, List<Atividade> atividades) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
+        this.maioridade = maioridade;
         this.listPlanoUsuario = listPlanoUsuario;
-        this.setMaioridade();
+        this.atividades = atividades;
     }
 
     public Usuario(Integer id, @NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
@@ -185,7 +190,9 @@ public class Usuario {
     public boolean isMaioridade() {
         return maioridade;
     }
-
+    public void setMaioridade(boolean maioridade) {
+        this.maioridade = maioridade;
+    }
     public void setMaioridade() {
         this.maioridade = ChronoUnit.YEARS.between(dtNascimento, LocalDate.now()) > 18;
     }
@@ -196,6 +203,14 @@ public class Usuario {
 
     public void setListPlanoUsuario(List<PlanoUsuarioRel> listPlanoUsuario) {
         this.listPlanoUsuario = listPlanoUsuario;
+    }
+
+    public List<Atividade> getAtividades() {
+        return atividades;
+    }
+
+    public void setAtividades(List<Atividade> atividades) {
+        this.atividades = atividades;
     }
 
     @Override

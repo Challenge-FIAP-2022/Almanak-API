@@ -1,6 +1,8 @@
 package br.com.almanak.almanakApi.controller;
 
+import java.lang.StackWalker.Option;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -8,7 +10,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.almanak.almanakApi.model.Usuario;
+import br.com.almanak.almanakApi.service.AtividadeService;
 import br.com.almanak.almanakApi.service.UsuarioService;
 
 @RestController
@@ -27,6 +29,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
+
+    @Autowired
+    private AtividadeService atividadeService;
 
     @GetMapping
     public List<Usuario> index(){
@@ -45,7 +50,15 @@ public class UsuarioController {
 
     @GetMapping("login/{email}/{senha}")
     public ResponseEntity<Usuario> login(@PathVariable("email") String email,@PathVariable("senha") String senha){
-        return ResponseEntity.of(service.login(email,senha));
+        var optional = service.login(email,senha);
+
+        if(!optional.isEmpty()){
+            Usuario usuario = optional.get();
+            atividadeService.login(usuario);
+            return ResponseEntity.of(Optional.of(usuario.ajustar()));
+        }
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PostMapping("cadastro")
@@ -55,6 +68,7 @@ public class UsuarioController {
         if(optional.isEmpty()){
 
             service.save(usuario);
+            atividadeService.login(usuario);
         
             return ResponseEntity
                     .status(HttpStatus.CREATED)

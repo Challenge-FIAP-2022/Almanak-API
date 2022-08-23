@@ -45,10 +45,8 @@ public class PlanoUsuarioRel {
     private LocalDateTime dtRegistro;
 
     public void addDependencies(Usuario usuario, Plano plano){
-        usuario.addPlano(this);
-        plano.addUsuario(this);
-        this.usuario = usuario;
-        this.plano = plano;
+        usuario.addToList(this);
+        plano.addToList(this);
     }
 
     public PlanoUsuarioRel(Integer id, Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtEncerramento,

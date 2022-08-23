@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -33,7 +34,7 @@ public class Plano {
     @GeneratedValue(generator="plano", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @NotNull
+    @NotBlank
     @Column(name="nm_plano")
     private String name; 
     
@@ -58,7 +59,7 @@ public class Plano {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="plano")
     private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
 
-    public void addUsuario(PlanoUsuarioRel planoUsuario){
+    public void addToList(PlanoUsuarioRel planoUsuario){
         planoUsuario.setPlano(this);
         this.getListPlanoUsuario().add(planoUsuario);
     }
@@ -171,7 +172,6 @@ public class Plano {
     public void setDtRegistro() {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();
-            System.out.println(this.dtRegistro);
     }
 
     public List<PlanoUsuarioRel> getListPlanoUsuario() {

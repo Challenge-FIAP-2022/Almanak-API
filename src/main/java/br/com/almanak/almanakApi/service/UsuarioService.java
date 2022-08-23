@@ -33,7 +33,8 @@ public class UsuarioService {
         if(optional.isEmpty())
             return Optional.empty();
 
-        return Optional.of(optional.get().ajustar());
+        
+        return Optional.of(optional.get());
     }
 
     public Optional<String> findByEmail(String email){
