@@ -1,6 +1,5 @@
 package br.com.almanak.almanakApi.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,17 +25,42 @@ public class PlanoService {
     }
 
     public Optional<List<Plano>> listByValid(EN_Booleano flag){
-        return Optional.of(repository.listByValid(flag));
+        return repository.listByValid(flag);
+    }
+
+    public Optional<Plano> findByName(String nome){
+        return repository.findByName(nome);
     }
 
     public void save(Plano plano){
-        if(plano.getDtRegistro() == null)
-            plano.setDtRegistro(LocalDateTime.now());
+        plano.setDtRegistro();
         repository.save(plano);
     }
 
-    public void remove(Integer id){
-        repository.deleteById(id);
+    public Optional<Plano> remove(Integer id){
+
+        Optional<Plano> planoOptional = repository.findById(id);
+
+        if(!planoOptional.isEmpty()){
+
+            var plano = planoOptional.get();
+
+            if(plano.getDtEncerramento() == null){
+
+                plano.setDtEncerramento();
+                repository.save(plano);
+                return Optional.of(plano);
+
+            }else{
+
+                return Optional.of(new Plano());
+            }
+
+        }else{
+
+            return Optional.empty();
+        }
+            
     }
     
 }

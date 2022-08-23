@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 
@@ -26,13 +26,15 @@ public class PlanoUsuarioRel {
     @GeneratedValue(generator="planoUsuario", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @Transient
+    @ManyToOne
+    @JoinColumn(name="id_usuario")
     private Usuario usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="id_plano")
     private Plano plano;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="fl_valido")
     private EN_Booleano valido;
 
@@ -41,6 +43,13 @@ public class PlanoUsuarioRel {
 
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
+
+    public void addDependencies(Usuario usuario, Plano plano){
+        usuario.addPlano(this);
+        plano.addUsuario(this);
+        this.usuario = usuario;
+        this.plano = plano;
+    }
 
     public PlanoUsuarioRel(Integer id, Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtEncerramento,
         LocalDateTime dtRegistro) {

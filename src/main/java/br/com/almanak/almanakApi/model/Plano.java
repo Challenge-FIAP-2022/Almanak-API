@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 
@@ -36,28 +41,30 @@ public class Plano {
     private String desc;
 
     @Column(name="vl_plano")
-    private Float valor;
+    private Double valor;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
+    @Type(type="PostgreSQLEnumType")
     @Column(name="fl_valido")
     private EN_Booleano valido;
 
     @Column(name="dt_encerramento")
     private LocalDateTime dtEncerramento;
 
-    @Column(name="dtRegistro")
+    @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="plano")
     private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
 
-    public void addPlano(PlanoUsuarioRel planoUsuario){
+    public void addUsuario(PlanoUsuarioRel planoUsuario){
         planoUsuario.setPlano(this);
         this.getListPlanoUsuario().add(planoUsuario);
     }
 
-    public Plano(Integer id, @NotNull String name, String desc, Float valor, EN_Booleano valido,
-            LocalDateTime dtEncerramento, LocalDateTime dtRegistro, List<PlanoUsuarioRel> planoUsuario) {
+    public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
+            LocalDateTime dtEncerramento, LocalDateTime dtRegistro, List<PlanoUsuarioRel> listPlanoUsuario) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -65,10 +72,10 @@ public class Plano {
         this.valido = valido;
         this.dtEncerramento = dtEncerramento;
         this.dtRegistro = dtRegistro;
-        this.listPlanoUsuario = planoUsuario;
+        this.listPlanoUsuario = listPlanoUsuario;
     }
 
-    public Plano(Integer id, @NotNull String name, String desc, Float valor, EN_Booleano valido,
+    public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
             LocalDateTime dtEncerramento, LocalDateTime dtRegistro) {
         this.id = id;
         this.name = name;
@@ -79,16 +86,7 @@ public class Plano {
         this.dtRegistro = dtRegistro;
     }
 
-    public Plano(@NotNull String name, String desc, Float valor, EN_Booleano valido,
-            List<PlanoUsuarioRel> planoUsuario) {
-        this.name = name;
-        this.desc = desc;
-        this.valor = valor;
-        this.valido = valido;
-        this.listPlanoUsuario = planoUsuario;
-    }
-
-    public Plano(@NotNull String name, String desc, Float valor, EN_Booleano valido, LocalDateTime dtRegistro) {
+    public Plano(@NotNull String name, String desc, Double valor, EN_Booleano valido, LocalDateTime dtRegistro) {
         this.name = name;
         this.desc = desc;
         this.valor = valor;
@@ -96,17 +94,20 @@ public class Plano {
         this.dtRegistro = dtRegistro;
     }
 
-    public Plano(@NotNull String name, String desc, Float valor, EN_Booleano valido) {
+    public Plano(@NotNull String name, String desc, Double valor, EN_Booleano valido) {
         this.name = name;
         this.desc = desc;
         this.valor = valor;
         this.valido = valido;
     }
 
-    public Plano(@NotNull String name, Float valor, EN_Booleano valido) {
+    public Plano(@NotNull String name, Double valor) {
         this.name = name;
         this.valor = valor;
-        this.valido = valido;
+    }
+
+    public Plano(@NotNull String name) {
+        this.name = name;
     }
 
     public Plano() {
@@ -136,11 +137,11 @@ public class Plano {
         this.desc = desc;
     }
 
-    public Float getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(Float valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
@@ -156,16 +157,21 @@ public class Plano {
         return dtEncerramento;
     }
 
-    public void setDtEncerramento(LocalDateTime dtEncerramento) {
-        this.dtEncerramento = dtEncerramento;
+    public void setDtEncerramento() {
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
+            this.valido = EN_Booleano.nao;
+        }
     }
 
     public LocalDateTime getDtRegistro() {
         return dtRegistro;
     }
 
-    public void setDtRegistro(LocalDateTime dtRegistro) {
-        this.dtRegistro = dtRegistro;
+    public void setDtRegistro() {
+        if (this.dtRegistro == null)
+            this.dtRegistro = LocalDateTime.now();
+            System.out.println(this.dtRegistro);
     }
 
     public List<PlanoUsuarioRel> getListPlanoUsuario() {

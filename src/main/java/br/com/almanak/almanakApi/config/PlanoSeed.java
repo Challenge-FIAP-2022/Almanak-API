@@ -20,9 +20,9 @@ public class PlanoSeed implements CommandLineRunner{
     @Override
     public void run(String... args) throws Exception {
         repository.saveAll(List.of( 
-            // new Plano("Gamer", null, 0f, EN_Booleano.sim, LocalDateTime.now()),
-            // new Plano("Pro Gamer", null, 2.99f, EN_Booleano.sim, LocalDateTime.now()),
-            // new Plano("Elite", null, 9.99f, EN_Booleano.sim, LocalDateTime.now())
+            new Plano("Gamer", null, 0d, EN_Booleano.sim, LocalDateTime.now()),
+            new Plano("Pro Gamer", null, 2.99, EN_Booleano.sim, LocalDateTime.now()),
+            new Plano("Elite", null, 9.99, EN_Booleano.sim, LocalDateTime.now())
         ));
     }
     

@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,43 +38,60 @@ public class UsuarioController {
         return ResponseEntity.of(service.getById(id));
     }
 
-    @GetMapping("adj/id/{id}")
+    @GetMapping("adj/{id}")
     public ResponseEntity<Usuario> showAdj(@PathVariable Integer id){
         return ResponseEntity.of(service.getByIdAdj(id));
     }
 
-    @GetMapping("adj/email/{email}")
-    public ResponseEntity<Usuario> showByEmailAdj(@PathVariable String email){
-        return ResponseEntity.of(service.getByEmailAdj(email));
+    @GetMapping("login/{email}/{senha}")
+    public ResponseEntity<Usuario> login(@PathVariable("email") String email,@PathVariable("senha") String senha){
+        return ResponseEntity.of(service.login(email,senha));
     }
 
-    @PostMapping
+    @PostMapping("cadastro")
     public ResponseEntity<Usuario> create(@RequestBody @Valid Usuario usuario){
-        service.save(usuario);
+        var optional = service.findByEmail(usuario.getEmail());
+
+        if(optional.isEmpty()){
+
+            service.save(usuario);
         
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(usuario);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(usuario.ajustar());
+
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
     }
+
 
     @PutMapping("{id}")
     public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
-        var optional = service.getById(id);
+        var optionalEmail = service.findByEmail(newUsuario.getEmail());
 
-        if(optional.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        if(!optionalEmail.isEmpty()){
+            var optional = service.getById(id);
 
-        var usuario = optional.get();
-        BeanUtils.copyProperties(newUsuario, usuario);
-        usuario.setId(id);
+            if(optional.isEmpty())
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        service.save(usuario);
-        return ResponseEntity.ok(usuario);
+            var usuario = optional.get();
+            BeanUtils.copyProperties(newUsuario, usuario);
+            usuario.setId(id);
+
+            service.save(usuario);
+            return ResponseEntity.ok(usuario.ajustar());
+
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> destroy(@PathVariable Integer id){
+    public ResponseEntity<Usuario> destroy(@PathVariable Integer id){
         var optional = service.getById(id);
 
         if(optional.isEmpty())

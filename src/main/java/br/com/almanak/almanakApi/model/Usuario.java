@@ -20,6 +20,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="tb_usuario")
 @SequenceGenerator(name="usuario", sequenceName="sq_usuario", allocationSize=1)
@@ -52,22 +54,33 @@ public class Usuario {
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
-    // @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
-    @Transient
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
     private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
 
     @Transient
     private boolean maioridade;
 
     public Usuario ajustar(){
-        Usuario retorno = this;
-        retorno.setMaioridade();
-        retorno.setName(null);
-        retorno.setEmail(null);
-        retorno.setSenha(null);
-        retorno.setDtNascimento(null);
-        retorno.setDtRegistro(null);
-        return retorno;
+        Usuario usuario = this;
+        
+        this.setMaioridade();
+        usuario.id = id;
+        usuario.name = null;
+        usuario.email = null;
+        usuario.senha = null;
+        usuario.dtNascimento = null;
+        usuario.dtRegistro = null;
+        usuario.listPlanoUsuario = null;
+        usuario.maioridade = this.maioridade;
+        
+        return usuario;
+    
+    }
+
+    public void addPlano(PlanoUsuarioRel planoUsuario){
+        planoUsuario.setUsuario(this);
+        this.getListPlanoUsuario().add(planoUsuario);
     }
 
     public Usuario(Integer id, @NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
@@ -80,58 +93,37 @@ public class Usuario {
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
         this.listPlanoUsuario = listPlanoUsuario;
-        this.maioridade = maioridade;
+        this.setMaioridade();
     }
 
-    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro,
-            List<PlanoUsuarioRel> listPlanoUsuario, boolean maioridade) {
-        this.name = name;
-        this.email = email;
-        this.senha = senha;
-        this.dtNascimento = dtNascimento;
-        this.dtRegistro = dtRegistro;
-        this.listPlanoUsuario = listPlanoUsuario;
-        this.maioridade = maioridade;
-    }
-
-    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento,
-            List<PlanoUsuarioRel> listPlanoUsuario, boolean maioridade) {
-        this.name = name;
-        this.email = email;
-        this.senha = senha;
-        this.dtNascimento = dtNascimento;
-        this.listPlanoUsuario = listPlanoUsuario;
-        this.maioridade = maioridade;
-    }
-
-    public Usuario(Integer id, String name, String email, String senha, LocalDate dtNascimento) {
+    public Usuario(Integer id, @NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
+        this.dtRegistro = dtRegistro;
+        this.setMaioridade();
     }
 
-    public Usuario(String name, String email, String senha, LocalDate dtNascimento, LocalDateTime dtRegistro) {
+    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro) {
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
+        this.setMaioridade();
     }
 
-    public Usuario(String name, String email, String senha, LocalDate dtNascimento) {
+    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento) {
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
-    }
-    
-    public Usuario(Integer id, boolean maioridade) {
-        this.id = id;
-        this.maioridade = maioridade;
+        this.setMaioridade();
     }
 
     public Usuario() {
@@ -181,8 +173,13 @@ public class Usuario {
         return dtRegistro;
     }
 
-    public void setDtRegistro(LocalDateTime dtRegistro) {
-        this.dtRegistro = dtRegistro;
+    public void setDtRegistro(LocalDateTime localDateTime) {
+        this.dtRegistro = localDateTime;
+    }
+
+    public void setDtRegistro() {
+        if (this.dtRegistro == null)
+            this.dtRegistro = LocalDateTime.now();
     }
 
     public boolean isMaioridade() {

@@ -1,6 +1,5 @@
 package br.com.almanak.almanakApi.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +27,21 @@ public class UsuarioService {
         return Optional.of(repository.findById(id).get().ajustar());
     }
 
-    public Optional<Usuario> getByEmailAdj(String email){
-        return Optional.of(repository.findByEmail(email).get(0).ajustar());
+    public Optional<Usuario> login(String email, String senha){
+        var optional = repository.login(email, senha);
+        
+        if(optional.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(optional.get().ajustar());
+    }
+
+    public Optional<String> findByEmail(String email){
+        return repository.findByEmail(email);
     }
 
     public void save(Usuario usuario){
-        if(usuario.getDtRegistro() == null)
-            usuario.setDtRegistro(LocalDateTime.now());
+        usuario.setDtRegistro();
         repository.save(usuario);
     }
 
