@@ -50,37 +50,38 @@ public class PlanoController {
 
     @PostMapping
     public ResponseEntity<Plano> create(@RequestBody @Valid Plano plano){
-        service.save(plano);
-        
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(plano);
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<Plano> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
-        var optionalName = service.findByName(newPlano.getName());
-
+        var optionalName = service.findByName(plano.getName());
         if(optionalName.isEmpty()){
-            var optional = service.getById(id);
-
-            if(optional.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-            var plano = optional.get();
-            BeanUtils.copyProperties(newPlano, plano);
-            plano.setId(id);
-
             service.save(plano);
-            return ResponseEntity.ok(plano);
+            
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(plano);
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<Plano> destroy(@PathVariable Integer id){
-        var planoResponse = service.remove(id);
+    @PutMapping("{id}")
+    public ResponseEntity<Plano> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
+        var optional = service.getById(id);
+
+        if(optional.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        var plano = optional.get();
+        BeanUtils.copyProperties(newPlano, plano);
+        plano.setId(id);
+
+        service.save(plano);
+
+        return ResponseEntity.ok(plano);
+        
+    }
+
+    @DeleteMapping("{nome}")
+    public ResponseEntity<Plano> destroy(@PathVariable String nome){
+        var planoResponse = service.remove(nome);
         if(planoResponse.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{
@@ -93,11 +94,6 @@ public class PlanoController {
 
         }
         
-    }
-
-    @GetMapping("teste/{flag}")
-    public EN_Booleano teste(@PathVariable() EN_Booleano flag){
-        return flag;
     }
 
 }

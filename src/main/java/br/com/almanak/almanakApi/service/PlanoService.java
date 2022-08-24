@@ -37,9 +37,9 @@ public class PlanoService {
         repository.save(plano);
     }
 
-    public Optional<Plano> remove(Integer id){
+    public Optional<Plano> remove(String nome){
 
-        Optional<Plano> planoOptional = repository.findById(id);
+        Optional<Plano> planoOptional = repository.findByName(nome);
 
         if(!planoOptional.isEmpty()){
 
@@ -49,6 +49,7 @@ public class PlanoService {
 
                 plano.setDtEncerramento();
                 repository.save(plano);
+
                 return Optional.of(plano);
 
             }else{

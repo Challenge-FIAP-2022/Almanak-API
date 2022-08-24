@@ -125,6 +125,13 @@ public class Contrato {
         this.dtEncerramento = dtEncerramento;
     }
 
+    public void setDtEncerramento() {
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
+            this.valido = EN_Booleano.nao;
+        }
+    }
+
     public LocalDateTime getDtRegistro() {
         return dtRegistro;
     }

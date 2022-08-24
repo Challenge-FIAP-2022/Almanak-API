@@ -47,4 +47,17 @@ public class AtividadeService {
         repository.save(atividade);
     }
     
+    public void abrirApp(Integer id){
+        
+        Optional<TipoAtividade> tipoAtividade = tipoAtividadeService.abrirApp();
+        Atividade atividade = new Atividade(null,null);
+        atividade.addUsuario(usuario);
+        
+        if(!tipoAtividade.isEmpty())
+            atividade.addTipoAtividade(tipoAtividade.get());
+
+        atividade.setDtRegistro();
+        repository.save(atividade);
+    }
+    
 }

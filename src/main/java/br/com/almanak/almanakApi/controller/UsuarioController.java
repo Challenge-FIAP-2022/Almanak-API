@@ -20,13 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.almanak.almanakApi.enumerator.EN_Booleano;
-import br.com.almanak.almanakApi.model.Contrato;
-import br.com.almanak.almanakApi.model.Plano;
 import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.service.AtividadeService;
-import br.com.almanak.almanakApi.service.ContratoService;
-import br.com.almanak.almanakApi.service.PlanoService;
 import br.com.almanak.almanakApi.service.UsuarioService;
 
 @RestController
@@ -38,13 +33,7 @@ public class UsuarioController {
 
     @Autowired
     private AtividadeService atividadeService;
-
-    @Autowired
-    private ContratoService contratoService;
-
-    @Autowired
-    private PlanoService planoService;
-
+    
     @GetMapping
     public Page<Usuario> index(Pageable pageable){
         return service.listAll(pageable);
@@ -67,6 +56,19 @@ public class UsuarioController {
         if(!optional.isEmpty()){
             Usuario usuario = optional.get();
             atividadeService.login(usuario);
+            return ResponseEntity.of(Optional.of(usuario.ajustar()));
+        }
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("abrirApp/{id}")
+    public ResponseEntity<Usuario> abrirApp(Integer id){
+        var atividadeOpt = atividadeService.abrirApp(id);
+
+        if(!atividadeOpt.isEmpty()){
+            Usuario usuario = optional.get();
+            atividadeService.abrirApp(usuario);
             return ResponseEntity.of(Optional.of(usuario.ajustar()));
         }
         
@@ -113,37 +115,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-    @PutMapping("contratacao")
-    public ResponseEntity<Usuario> contratacao(@RequestBody @Valid Usuario usuario, @RequestBody @Valid Plano plano){
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuario.ajustar());
-    }
-
-    @PutMapping("contratacao/{nomePlano}")
-    public ResponseEntity<Contrato> contratacao(@RequestBody @Valid Usuario usuarioBody, @PathVariable String nomePlano){
-        var optionalPlano = planoService.findByName(nomePlano);
-
-        if(!optionalPlano.isEmpty()){
-            Plano plano = optionalPlano.get();
-            var optional = service.getById(usuarioBody.getId());
-
-            if(optional.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-            Usuario usuario = optional.get();
-            System.out.println(usuario);
-            Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
-            System.out.println(contrato);
-            contratoService.save(contrato);
-            contrato.setUsuario(usuario.ajustar());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(contrato);
-
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
 
     @DeleteMapping("{id}")
     public ResponseEntity<Usuario> destroy(@PathVariable Integer id){

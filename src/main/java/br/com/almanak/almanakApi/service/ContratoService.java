@@ -22,6 +22,9 @@ public class ContratoService {
     @Autowired
     PlanoService planoService;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     public Page<Contrato> listAll(Pageable pageable){
         return repository.findAll(pageable);
     }
@@ -35,21 +38,17 @@ public class ContratoService {
         repository.save(contrato);
     }
 
-    public void contracacao(Usuario usuario, Plano plano){
-        
-        Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
-        contrato.setDtRegistro();
-        repository.save(contrato);
-    }
-
     public Optional<Usuario> contracacao(Usuario usuario, String nomePlano){
         
-        Optional<Plano> plano = planoService.findByName(nomePlano);
+        Optional<Plano> planoOpt = planoService.findByName(nomePlano);
+        Optional<Usuario> usuarioOpt = usuarioService.getById(usuario.getId());
         
-        if(!plano.isEmpty()){
+        if(!planoOpt.isEmpty() && usuarioOpt.isEmpty()){
 
-            Contrato contrato = new Contrato(usuario, null, EN_Booleano.sim);
-            contrato.addPlano(plano.get());
+            usuario = usuarioOpt.get();
+            Plano plano = planoOpt.get();
+            Contrato contrato = new Contrato(null, null, EN_Booleano.sim);
+            contrato.addDependencies(usuario, plano);
             contrato.setDtRegistro();
             repository.save(contrato);
             return Optional.of(usuario);
@@ -58,6 +57,37 @@ public class ContratoService {
             return Optional.empty();
         }
         
+    }
+
+    public Optional<Contrato> remove(Integer id){
+
+        Optional<Contrato> optional = repository.findById(id);
+
+        if(!optional.isEmpty()){
+
+            var contrato = optional.get();
+
+            if(contrato.getDtEncerramento() == null){
+
+                Usuario usuario = contrato.getUsuario();
+                Plano plano = planoService.findByName("Gamer").get(); 
+                Contrato contratoNew = new Contrato(null, null, EN_Booleano.sim);
+                contratoNew.addDependencies(usuario, plano);
+                contratoNew.setDtRegistro();
+                repository.save(contratoNew);
+
+                return Optional.of(contratoNew);
+
+            }else{
+
+                return Optional.of(new Contrato());
+            }
+
+        }else{
+
+            return Optional.empty();
+        }
+            
     }
     
 }

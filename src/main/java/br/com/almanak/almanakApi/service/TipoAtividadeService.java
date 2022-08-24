@@ -31,6 +31,11 @@ public class TipoAtividadeService {
         return repository.login();
     }
 
+    
+    public Optional<TipoAtividade> abrirApp(){
+        return repository.abrirApp();
+    }
+
     public void save(TipoAtividade tipoAtividade){
         tipoAtividade.setDtRegistro();
         repository.save(tipoAtividade);
