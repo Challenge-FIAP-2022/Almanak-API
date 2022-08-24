@@ -57,15 +57,15 @@ public class Plano {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="plano")
-    private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
+    private List<Contrato> contratos = new ArrayList<Contrato>();
 
-    public void addToList(PlanoUsuarioRel planoUsuario){
-        planoUsuario.setPlano(this);
-        this.getListPlanoUsuario().add(planoUsuario);
+    public void addToList(Contrato contrato){
+        contrato .setPlano(this);
+        this.getContratos().add(contrato);
     }
 
     public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
-            LocalDateTime dtEncerramento, LocalDateTime dtRegistro, List<PlanoUsuarioRel> listPlanoUsuario) {
+            LocalDateTime dtEncerramento, LocalDateTime dtRegistro, List<Contrato> contratos) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -73,7 +73,7 @@ public class Plano {
         this.valido = valido;
         this.dtEncerramento = dtEncerramento;
         this.dtRegistro = dtRegistro;
-        this.listPlanoUsuario = listPlanoUsuario;
+        this.contratos = contratos;
     }
 
     public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
@@ -174,12 +174,12 @@ public class Plano {
             this.dtRegistro = LocalDateTime.now();
     }
 
-    public List<PlanoUsuarioRel> getListPlanoUsuario() {
-        return listPlanoUsuario;
+    public List<Contrato> getContratos() {
+        return contratos;
     }
 
-    public void setListPlanoUsuario(List<PlanoUsuarioRel> lista) {
-        this.listPlanoUsuario = lista;
+    public void setContratos(List<Contrato> lista) {
+        this.contratos = lista;
     }
     
     @Override

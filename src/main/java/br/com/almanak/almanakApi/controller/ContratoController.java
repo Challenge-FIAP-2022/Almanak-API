@@ -9,24 +9,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.almanak.almanakApi.model.Atividade;
-import br.com.almanak.almanakApi.service.AtividadeService;
+import br.com.almanak.almanakApi.model.Contrato;
+import br.com.almanak.almanakApi.service.ContratoService;
 
 @RestController
-@RequestMapping("/api/atividade")
-public class AtividadeController {
+@RequestMapping("/api/contrato")
+public class ContratoController {
 
     @Autowired
-    private AtividadeService tpService;
+    private ContratoService contService;
 
     @GetMapping
-    public Page<Atividade> index(Pageable pageable){
-        return tpService.listAll(pageable);
+    public Page<Contrato> index(Pageable pageable){
+        return contService.listAll(pageable);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Atividade> show(@PathVariable Integer id){
-        return ResponseEntity.of(tpService.getById(id));
+    public ResponseEntity<Contrato> show(@PathVariable Integer id){
+        return ResponseEntity.of(contService.getById(id));
     }
-    
 }

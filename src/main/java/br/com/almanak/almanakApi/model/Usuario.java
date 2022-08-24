@@ -32,22 +32,18 @@ public class Usuario {
     @GeneratedValue(generator="usuario", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @NotBlank
     @Size(max=50)
     @Column(name="nm_usuario")
     private String name;
 
-    @NotBlank
     @Size(min=12, max=50)
     @Column(name="ds_email")
     private String email;
 
-    @NotNull
     @Size(max=20)
     @Column(name="ds_senha")
     private String senha;
 
-    @NotBlank
     @Column(name="dt_nascimento")
     private LocalDate dtNascimento;
 
@@ -59,7 +55,7 @@ public class Usuario {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
-    private List<PlanoUsuarioRel> listPlanoUsuario = new ArrayList<PlanoUsuarioRel>();
+    private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
@@ -77,9 +73,9 @@ public class Usuario {
     
     }
 
-    public void addToList(PlanoUsuarioRel planoUsuario){
-        planoUsuario.setUsuario(this);
-        this.getListPlanoUsuario().add(planoUsuario);
+    public void addToList(Contrato contrato){
+        contrato.setUsuario(this);
+        this.getContratos().add(contrato);
     }
 
     public void addToList(Atividade atividade){
@@ -89,7 +85,7 @@ public class Usuario {
 
     public Usuario(Integer id, @NotBlank @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
             @NotNull @Size(max = 20) String senha, @NotBlank LocalDate dtNascimento, LocalDateTime dtRegistro,
-            boolean maioridade, List<PlanoUsuarioRel> listPlanoUsuario, List<Atividade> atividades) {
+            boolean maioridade, List<Contrato> contratos, List<Atividade> atividades) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -97,7 +93,7 @@ public class Usuario {
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
         this.maioridade = maioridade;
-        this.listPlanoUsuario = listPlanoUsuario;
+        this.contratos = contratos;
         this.atividades = atividades;
     }
 
@@ -197,12 +193,12 @@ public class Usuario {
         this.maioridade = ChronoUnit.YEARS.between(dtNascimento, LocalDate.now()) > 18;
     }
 
-    public List<PlanoUsuarioRel> getListPlanoUsuario() {
-        return listPlanoUsuario;
+    public List<Contrato> getContratos() {
+        return contratos;
     }
 
-    public void setListPlanoUsuario(List<PlanoUsuarioRel> listPlanoUsuario) {
-        this.listPlanoUsuario = listPlanoUsuario;
+    public void setContratos(List<Contrato> contratos) {
+        this.contratos = contratos;
     }
 
     public List<Atividade> getAtividades() {

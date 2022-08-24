@@ -14,27 +14,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 
 @Entity
 @Table(name="tb_plano_usuario")
 @SequenceGenerator(name="planoUsuario", sequenceName="sq_plano_usuario", allocationSize=1)
-public class PlanoUsuarioRel {
+public class Contrato {
 
     @Id
     @Column(name="id_plano_usuario")
     @GeneratedValue(generator="planoUsuario", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name="id_usuario")
-    private Usuario usuario;
-
-    @ManyToOne
-    @JoinColumn(name="id_plano")
-    private Plano plano;
-
     @Enumerated(EnumType.STRING)
+    @Type(type="PostgreSQLEnumType")
     @Column(name="fl_valido")
     private EN_Booleano valido;
 
@@ -44,12 +39,28 @@ public class PlanoUsuarioRel {
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
+    @ManyToOne
+    @JoinColumn(name="id_usuario")
+    private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name="id_plano")
+    private Plano plano;
+
     public void addDependencies(Usuario usuario, Plano plano){
         usuario.addToList(this);
         plano.addToList(this);
     }
 
-    public PlanoUsuarioRel(Integer id, Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtEncerramento,
+    public void addPlano(Plano plano){
+        plano.addToList(this);
+    }
+
+    public void addUsuario(Usuario usuario){
+        usuario.addToList(this);
+    }
+
+    public Contrato(Integer id, Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtEncerramento,
         LocalDateTime dtRegistro) {
         this.id = id;
         this.usuario = usuario;
@@ -59,20 +70,19 @@ public class PlanoUsuarioRel {
         this.dtRegistro = dtRegistro;
     }
     
-    public PlanoUsuarioRel(Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtRegistro) {
+    public Contrato(Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtRegistro) {
         this.usuario = usuario;
         this.plano = plano;
         this.valido = valido;
         this.dtRegistro = dtRegistro;
     }
 
-    public PlanoUsuarioRel(Usuario usuario, Plano plano, EN_Booleano valido) {
-        this.usuario = usuario;
-        this.plano = plano;
+    public Contrato(Usuario usuario, Plano plano, EN_Booleano valido) {
+        this.addDependencies(usuario, plano);
         this.valido = valido;
     }
 
-    public PlanoUsuarioRel() {
+    public Contrato() {
     }
 
     public Integer getId() {
@@ -123,10 +133,15 @@ public class PlanoUsuarioRel {
         this.dtRegistro = dtRegistro;
     }
 
+    public void setDtRegistro() {
+        if (this.dtRegistro == null)
+            this.dtRegistro = LocalDateTime.now();
+    }
+
     @Override
     public String toString() {
-        return "PlanoUsuarioRel [dtEncerramento=" + dtEncerramento + ", dtRegistro=" + dtRegistro + ", id=" + id
-                + ", plano=" + plano + ", usuario=" + usuario + ", valido=" + valido + "]";
+        return "Contrato [dtEncerramento=" + dtEncerramento + ", dtRegistro=" + dtRegistro + ", id=" + id + ", plano="
+                + plano + ", usuario=" + usuario + ", valido=" + valido + "]";
     }
 
 }

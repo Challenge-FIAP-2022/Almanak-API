@@ -1,12 +1,13 @@
 package br.com.almanak.almanakApi.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,10 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import br.com.almanak.almanakApi.model.Contrato;
+import br.com.almanak.almanakApi.model.Plano;
 import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.service.AtividadeService;
+import br.com.almanak.almanakApi.service.ContratoService;
+import br.com.almanak.almanakApi.service.PlanoService;
 import br.com.almanak.almanakApi.service.UsuarioService;
 
 @RestController
@@ -32,9 +39,15 @@ public class UsuarioController {
     @Autowired
     private AtividadeService atividadeService;
 
+    @Autowired
+    private ContratoService contratoService;
+
+    @Autowired
+    private PlanoService planoService;
+
     @GetMapping
-    public List<Usuario> index(){
-        return service.listAll();
+    public Page<Usuario> index(Pageable pageable){
+        return service.listAll(pageable);
     }
 
     @GetMapping("{id}")
@@ -47,8 +60,8 @@ public class UsuarioController {
         return ResponseEntity.of(service.getByIdAdj(id));
     }
 
-    @GetMapping("login/{email}/{senha}")
-    public ResponseEntity<Usuario> login(@PathVariable("email") String email,@PathVariable("senha") String senha){
+    @GetMapping("login")
+    public ResponseEntity<Usuario> login(@RequestParam String email,@RequestParam String senha){
         var optional = service.login(email,senha);
 
         if(!optional.isEmpty()){
@@ -78,8 +91,7 @@ public class UsuarioController {
         }
 
     }
-
-
+    
     @PutMapping("{id}")
     public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
         var optionalEmail = service.findByEmail(newUsuario.getEmail());
@@ -99,6 +111,36 @@ public class UsuarioController {
 
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PutMapping("contratacao")
+    public ResponseEntity<Usuario> contratacao(@RequestBody @Valid Usuario usuario, @RequestBody @Valid Plano plano){
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuario.ajustar());
+    }
+
+    @PutMapping("contratacao/{nomePlano}")
+    public ResponseEntity<Contrato> contratacao(@RequestBody @Valid Usuario usuarioBody, @PathVariable String nomePlano){
+        var optionalPlano = planoService.findByName(nomePlano);
+
+        if(!optionalPlano.isEmpty()){
+            Plano plano = optionalPlano.get();
+            var optional = service.getById(usuarioBody.getId());
+
+            if(optional.isEmpty())
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+            Usuario usuario = optional.get();
+            System.out.println(usuario);
+            Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
+            System.out.println(contrato);
+            contratoService.save(contrato);
+            contrato.setUsuario(usuario.ajustar());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(contrato);
+
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
