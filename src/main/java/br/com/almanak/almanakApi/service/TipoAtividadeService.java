@@ -40,5 +40,9 @@ public class TipoAtividadeService {
         tipoAtividade.setDtRegistro();
         repository.save(tipoAtividade);
     }
+
+    public void deleteById(Integer id) {
+        repository.deleteById(id);
+    }
     
 }

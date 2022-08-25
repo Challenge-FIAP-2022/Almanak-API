@@ -28,5 +28,5 @@ public class AtividadeController {
     public ResponseEntity<Atividade> show(@PathVariable Integer id){
         return ResponseEntity.of(tpService.getById(id));
     }
-    
+
 }

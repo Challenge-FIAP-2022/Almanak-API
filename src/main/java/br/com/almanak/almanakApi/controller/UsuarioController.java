@@ -62,17 +62,17 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("abrirApp/{id}")
-    public ResponseEntity<Usuario> abrirApp(Integer id){
-        var atividadeOpt = atividadeService.abrirApp(id);
+    @GetMapping("abrirapp/{id}")
+    public ResponseEntity<Usuario> abrirApp(@PathVariable Integer id){
+        var optional = service.getById(id);
 
-        if(!atividadeOpt.isEmpty()){
+        if(!optional.isEmpty()){
             Usuario usuario = optional.get();
             atividadeService.abrirApp(usuario);
             return ResponseEntity.of(Optional.of(usuario.ajustar()));
         }
         
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("cadastro")

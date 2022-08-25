@@ -38,6 +38,10 @@ public class ContratoService {
         repository.save(contrato);
     }
 
+    public Optional<Contrato> findByUser (Integer id){
+        return repository.findByUser(id);
+    }
+
     public Optional<Usuario> contracacao(Usuario usuario, String nomePlano){
         
         Optional<Plano> planoOpt = planoService.findByName(nomePlano);

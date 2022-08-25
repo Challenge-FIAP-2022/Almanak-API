@@ -47,7 +47,7 @@ public class AtividadeService {
         repository.save(atividade);
     }
     
-    public void abrirApp(Integer id){
+    public Optional<Atividade> abrirApp(Usuario usuario){
         
         Optional<TipoAtividade> tipoAtividade = tipoAtividadeService.abrirApp();
         Atividade atividade = new Atividade(null,null);
@@ -58,6 +58,9 @@ public class AtividadeService {
 
         atividade.setDtRegistro();
         repository.save(atividade);
+
+        return Optional.of(atividade);
+
     }
     
 }

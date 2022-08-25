@@ -46,6 +46,11 @@ public class ContratoController {
         return ResponseEntity.of(contService.getById(id));
     }
 
+    @GetMapping("ativo/{id}")
+    public ResponseEntity<Contrato> findByUser(@PathVariable Integer id){
+        return ResponseEntity.of(contService.findByUser(id));
+    }
+
     @PutMapping("contratacao/{nomePlano}")
     public ResponseEntity<Contrato> contratacao(@RequestBody @Valid Usuario usuarioBody, @PathVariable String nomePlano){
         var optionalPlano = planoService.findByName(nomePlano);
@@ -60,7 +65,6 @@ public class ContratoController {
             Usuario usuario = optional.get();
             System.out.println(usuario);
             Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
-            System.out.println(contrato);
             contService.save(contrato);
             contrato.setUsuario(usuario.ajustar());
 
