@@ -52,11 +52,6 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("adj/{id}")
-    public ResponseEntity<Usuario> showAdj(@PathVariable Integer id){
-        return ResponseEntity.of(service.getByIdAdj(id));
-    }
-
     @GetMapping("login")
     public ResponseEntity<Usuario> login(@RequestParam String email,@RequestParam String senha){
         var optional = service.login(email,senha);

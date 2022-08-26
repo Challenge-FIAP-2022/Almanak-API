@@ -63,11 +63,5 @@ public class Atividade {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();
     }
-
-    @Override
-    public String toString() {
-        return "Atividade [desc=" + desc + ", dtRegistro=" + dtRegistro + ", id=" + id + ", tabelaAlterada="
-                + tabelaAlterada + ", tipoAtividade=" + tipoAtividade + ", usuario=" + usuario + "]";
-    }
     
 }

@@ -63,7 +63,6 @@ public class ContratoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
             Usuario usuario = optional.get();
-            System.out.println(usuario);
             Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
             contService.save(contrato);
             contrato.setUsuario(usuario.ajustar());

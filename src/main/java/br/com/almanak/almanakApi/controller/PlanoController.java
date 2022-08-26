@@ -1,6 +1,7 @@
 package br.com.almanak.almanakApi.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.Interface.PlanoDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Plano;
 import br.com.almanak.almanakApi.service.PlanoService;
@@ -39,13 +41,26 @@ public class PlanoController {
     }
 
     @GetMapping("valido/{flag}")
-    public ResponseEntity<List<Plano>> listByValid(@PathVariable() EN_Booleano flag){
-            return ResponseEntity.of(service.listByValid(flag));
+    public ResponseEntity<List<PlanoDTO>> listByValid(@PathVariable() EN_Booleano flag){
+        Optional<List<Plano>> opts = service.listByValid(flag);
+
+        if(!opts.isEmpty()){
+            List<Plano> planos = opts.get();
+            List<PlanoDTO> dtos = new PlanoDTO().convertList(planos);
+            return ResponseEntity.ok(dtos);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
         
     @GetMapping("nome/{nome}")
-    public ResponseEntity<Plano> findByName(@PathVariable String nome){
-        return ResponseEntity.of(service.findByName(nome));
+    public ResponseEntity<PlanoDTO> findByName(@PathVariable String nome){
+        Optional<Plano> plano = service.findByName(nome);
+        
+        if(!plano.isEmpty())
+            return ResponseEntity.ok(new PlanoDTO().convert(plano.get()));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping

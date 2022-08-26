@@ -1,5 +1,7 @@
 package br.com.almanak.almanakApi.Interface;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,31 @@ public class PlanoDTO {
 
     private Integer id;
     private String name;
+    private String desc;
     private Double valor;
 
     public PlanoDTO convert(Plano plano){
         try{
             this.id = plano.getId();
             this.name = plano.getName();
+            this.desc = plano.getDesc();
             this.valor = plano.getValor();
             return this;
         }catch(Exception e){
             return this;
+        }
+        
+    }
+
+    public List<PlanoDTO> convertList(List<Plano> planos){
+        try{
+            List<PlanoDTO> dtos = new ArrayList<PlanoDTO>();
+            for (Plano p : planos){
+                dtos.add(new PlanoDTO().convert(p));
+            }
+            return dtos;
+        }catch(Exception e){
+            return new ArrayList<PlanoDTO>();
         }
         
     }

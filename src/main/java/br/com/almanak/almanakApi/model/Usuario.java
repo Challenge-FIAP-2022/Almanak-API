@@ -26,6 +26,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -166,7 +167,6 @@ public class Usuario {
         this.getContratos();
         for(Contrato c : contratos){
             if(c.getValido() == EN_Booleano.sim){
-                System.out.println(c);
                 plano = c.getPlano();
             }
         }
