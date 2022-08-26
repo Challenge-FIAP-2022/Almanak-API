@@ -17,15 +17,21 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="tb_plano_usuario")
-@SequenceGenerator(name="planoUsuario", sequenceName="sq_plano_usuario", allocationSize=1)
+@SequenceGenerator(name="contrato", sequenceName="sq_plano_usuario", allocationSize=1)
 public class Contrato {
 
     @Id
     @Column(name="id_plano_usuario")
-    @GeneratedValue(generator="planoUsuario", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator="contrato", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
@@ -82,73 +88,16 @@ public class Contrato {
         this.valido = valido;
     }
 
-    public Contrato() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Plano getPlano() {
-        return plano;
-    }
-
-    public void setPlano(Plano plano) {
-        this.plano = plano;
-    }
-
-    public EN_Booleano getValido() {
-        return valido;
-    }
-
-    public void setValido(EN_Booleano valido) {
-        this.valido = valido;
-    }
-
-    public LocalDateTime getDtEncerramento() {
-        return dtEncerramento;
-    }
-
-    public void setDtEncerramento(LocalDateTime dtEncerramento) {
-        this.dtEncerramento = dtEncerramento;
-    }
-
-    public void setDtEncerramento() {
-        if (this.dtEncerramento == null){
-            this.dtEncerramento = LocalDateTime.now();
-            this.valido = EN_Booleano.nao;
-        }
-    }
-
-    public LocalDateTime getDtRegistro() {
-        return dtRegistro;
-    }
-
-    public void setDtRegistro(LocalDateTime dtRegistro) {
-        this.dtRegistro = dtRegistro;
-    }
-
     public void setDtRegistro() {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();
     }
 
-    @Override
-    public String toString() {
-        return "Contrato [dtEncerramento=" + dtEncerramento + ", dtRegistro=" + dtRegistro + ", id=" + id + ", plano="
-                + plano + ", usuario=" + usuario + ", valido=" + valido + "]";
+    public void setDtEncerramento() {
+        if (this.dtRegistro == null){
+            this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.nao;
+        }
     }
 
 }

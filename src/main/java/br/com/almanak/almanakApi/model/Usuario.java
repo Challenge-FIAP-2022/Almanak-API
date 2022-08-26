@@ -17,11 +17,18 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="tb_usuario")
 @SequenceGenerator(name="usuario", sequenceName="sq_usuario", allocationSize=1)
@@ -36,6 +43,7 @@ public class Usuario {
     @Column(name="nm_usuario")
     private String name;
 
+    @NotBlank
     @Size(min=12, max=50)
     @Column(name="ds_email")
     private String email;
@@ -54,12 +62,20 @@ public class Usuario {
     private boolean maioridade;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario")
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
     private List<Atividade> atividades = new ArrayList<Atividade>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    private List<Jogo> jogos = new ArrayList<Jogo>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    private List<Avaliacao> avaliacoes = new ArrayList<Avaliacao>();
 
 
     public Usuario ajustar(){
@@ -83,9 +99,19 @@ public class Usuario {
         this.getAtividades().add(atividade);
     }
 
-    public Usuario(Integer id, @NotBlank @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotBlank LocalDate dtNascimento, LocalDateTime dtRegistro,
-            boolean maioridade, List<Contrato> contratos, List<Atividade> atividades) {
+    public void addToList(Jogo jogo){
+        jogo.setUsuario(this);
+        this.getJogos().add(jogo);
+    }
+
+    public void addToList(Avaliacao avaliacao){
+        avaliacao.setUsuario(this);
+        this.getAvaliacoes().add(avaliacao);
+    }
+
+    public Usuario(Integer id, @Size(max = 50) String name, @Size(min = 12, max = 50) String email,
+            @Size(max = 20) String senha, LocalDate dtNascimento, LocalDateTime dtRegistro, boolean maioridade,
+            List<Contrato> contratos, List<Atividade> atividades, List<Jogo> jogos) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -95,87 +121,34 @@ public class Usuario {
         this.maioridade = maioridade;
         this.contratos = contratos;
         this.atividades = atividades;
+        this.jogos = jogos;
     }
 
-    public Usuario(Integer id, @NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro) {
+    public Usuario(Integer id, @Size(max = 50) String name, @Size(min = 12, max = 50) String email,
+            @Size(max = 20) String senha, LocalDate dtNascimento, LocalDateTime dtRegistro) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
-        this.setMaioridade();
     }
 
-    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento, LocalDateTime dtRegistro) {
+    public Usuario(@Size(max = 50) String name, @Size(min = 12, max = 50) String email, @Size(max = 20) String senha,
+            LocalDate dtNascimento) {
+        this.name = name;
+        this.email = email;
+        this.senha = senha;
+        this.dtNascimento = dtNascimento;
+    }
+
+    public Usuario(@Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @Size(max = 20) String senha, LocalDate dtNascimento, LocalDateTime dtRegistro) {
         this.name = name;
         this.email = email;
         this.senha = senha;
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
-        this.setMaioridade();
-    }
-
-    public Usuario(@NotNull @Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @NotNull @Size(max = 20) String senha, @NotNull LocalDate dtNascimento) {
-        this.name = name;
-        this.email = email;
-        this.senha = senha;
-        this.dtNascimento = dtNascimento;
-        this.setMaioridade();
-    }
-
-    public Usuario() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public LocalDate getDtNascimento() {
-        return dtNascimento;
-    }
-
-    public void setDtNascimento(LocalDate dtNascimento) {
-        this.dtNascimento = dtNascimento;
-    }
-
-    public LocalDateTime getDtRegistro() {
-        return dtRegistro;
-    }
-
-    public void setDtRegistro(LocalDateTime localDateTime) {
-        this.dtRegistro = localDateTime;
     }
 
     public void setDtRegistro() {
@@ -183,38 +156,23 @@ public class Usuario {
             this.dtRegistro = LocalDateTime.now();
     }
 
-    public boolean isMaioridade() {
-        return maioridade;
-    }
-    public void setMaioridade(boolean maioridade) {
-        this.maioridade = maioridade;
-    }
     public void setMaioridade() {
         this.maioridade = ChronoUnit.YEARS.between(dtNascimento, LocalDate.now()) > 18;
     }
 
-    public List<Contrato> getContratos() {
-        return contratos;
+    public Plano getPlanoValido() {
+        Plano plano = new Plano();
+
+        this.getContratos();
+        for(Contrato c : contratos){
+            if(c.getValido() == EN_Booleano.sim){
+                System.out.println(c);
+                plano = c.getPlano();
+            }
+        }
+        
+        return plano;
+
     }
-
-    public void setContratos(List<Contrato> contratos) {
-        this.contratos = contratos;
-    }
-
-    public List<Atividade> getAtividades() {
-        return atividades;
-    }
-
-    public void setAtividades(List<Atividade> atividades) {
-        this.atividades = atividades;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario [dtNascimento=" + dtNascimento + ", dtRegistro=" + dtRegistro + ", email=" + email
-                + ", maioridade=" + maioridade + ", id=" + id + ", name=" + name + ", senha=" + senha + "]";
-    }
-
-
 
 }

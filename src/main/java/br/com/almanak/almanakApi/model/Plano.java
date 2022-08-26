@@ -23,7 +23,13 @@ import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="tb_plano")
 @SequenceGenerator(name="plano", sequenceName="sq_plano", allocationSize=1)
@@ -56,24 +62,12 @@ public class Plano {
     private LocalDateTime dtRegistro;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="plano")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="plano")
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     public void addToList(Contrato contrato){
         contrato .setPlano(this);
         this.getContratos().add(contrato);
-    }
-
-    public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
-            LocalDateTime dtEncerramento, LocalDateTime dtRegistro, List<Contrato> contratos) {
-        this.id = id;
-        this.name = name;
-        this.desc = desc;
-        this.valor = valor;
-        this.valido = valido;
-        this.dtEncerramento = dtEncerramento;
-        this.dtRegistro = dtRegistro;
-        this.contratos = contratos;
     }
 
     public Plano(Integer id, @NotNull String name, String desc, Double valor, EN_Booleano valido,
@@ -111,81 +105,16 @@ public class Plano {
         this.name = name;
     }
 
-    public Plano() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public EN_Booleano getValido() {
-        return valido;
-    }
-
-    public void setValido(EN_Booleano valido) {
-        this.valido = valido;
-    }
-
-    public LocalDateTime getDtEncerramento() {
-        return dtEncerramento;
-    }
-
-    public void setDtEncerramento() {
-        if (this.dtEncerramento == null){
-            this.dtEncerramento = LocalDateTime.now();
-            this.valido = EN_Booleano.nao;
-        }
-    }
-
-    public LocalDateTime getDtRegistro() {
-        return dtRegistro;
-    }
-
     public void setDtRegistro() {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();
     }
 
-    public List<Contrato> getContratos() {
-        return contratos;
-    }
-
-    public void setContratos(List<Contrato> lista) {
-        this.contratos = lista;
-    }
-    
-    @Override
-    public String toString() {
-        return "Plano [desc=" + desc + ", dtEncerramento=" + dtEncerramento + ", dtRegistro=" + dtRegistro + ", id="
-                + id + ", name=" + name + ", valido=" + valido + ", valor=" + valor + "]";
+    public void setDtEncerramento() {
+        if (this.dtRegistro == null){
+            this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.nao;
+        }
     }
 
 }

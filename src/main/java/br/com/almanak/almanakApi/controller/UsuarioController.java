@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.Interface.UsuarioDTO;
 import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.service.AtividadeService;
 import br.com.almanak.almanakApi.service.UsuarioService;
@@ -40,8 +41,15 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Usuario> show(@PathVariable Integer id){
-        return ResponseEntity.of(service.getById(id));
+    public ResponseEntity<UsuarioDTO> show(@PathVariable Integer id){
+        Optional<Usuario> opt = service.getById(id);
+
+        if(!opt.isEmpty()){
+            Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(opt.get()));
+            return ResponseEntity.of(dto);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("adj/{id}")
