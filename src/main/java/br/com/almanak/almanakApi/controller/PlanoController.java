@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,13 +33,21 @@ public class PlanoController {
     private PlanoService service;
  
     @GetMapping
-    public List<Plano> index(){
-        return service.listAll();
+    public Page<Plano> index(Pageable pageable){
+        return service.listAll(pageable);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Plano> show(@PathVariable Integer id){
-        return ResponseEntity.of(service.getById(id));
+    public ResponseEntity<PlanoDTO> show(@PathVariable Integer id){
+        Optional<Plano> opt = service.getById(id);
+
+        if(!opt.isEmpty()){
+            Optional<PlanoDTO> dto = Optional.of(new PlanoDTO().convert(opt.get()));
+            return ResponseEntity.of(dto);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
     @GetMapping("valido/{flag}")
@@ -64,21 +74,22 @@ public class PlanoController {
     }
 
     @PostMapping
-    public ResponseEntity<Plano> create(@RequestBody @Valid Plano plano){
+    public ResponseEntity<PlanoDTO> create(@RequestBody @Valid Plano plano){
         var optionalName = service.findByName(plano.getName());
         if(optionalName.isEmpty()){
             service.save(plano);
+            PlanoDTO dto = new PlanoDTO().convert(plano);
             
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(plano);
+                    .body(dto);
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Plano> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
+    public ResponseEntity<PlanoDTO> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
         var optional = service.getById(id);
 
         if(optional.isEmpty())
@@ -89,14 +100,32 @@ public class PlanoController {
         plano.setId(id);
 
         service.save(plano);
+        Optional<PlanoDTO> dto = Optional.of(new PlanoDTO().convert(plano));
 
-        return ResponseEntity.ok(plano);
+        return ResponseEntity.of(dto);
         
     }
 
-    @DeleteMapping("{nome}")
-    public ResponseEntity<Plano> destroy(@PathVariable String nome){
+    @DeleteMapping("byname/{nome}")
+    public ResponseEntity<Plano> destroyByName(@PathVariable String nome){
         var planoResponse = service.remove(nome);
+        if(planoResponse.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }else{
+            
+            var plano = planoResponse.get();
+            if(plano.getId() == null)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                
+            return ResponseEntity.ok(plano);
+
+        }
+        
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Plano> destroy(@PathVariable Integer id){
+        var planoResponse = service.remove(id);
         if(planoResponse.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{

@@ -53,43 +53,47 @@ public class UsuarioController {
     }
 
     @GetMapping("login")
-    public ResponseEntity<Usuario> login(@RequestParam String email,@RequestParam String senha){
+    public ResponseEntity<UsuarioDTO> login(@RequestParam String email,@RequestParam String senha){
         var optional = service.login(email,senha);
 
         if(!optional.isEmpty()){
             Usuario usuario = optional.get();
             atividadeService.login(usuario);
-            return ResponseEntity.of(Optional.of(usuario.ajustar()));
-        }
-        
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    @GetMapping("abrirapp/{id}")
-    public ResponseEntity<Usuario> abrirApp(@PathVariable Integer id){
-        var optional = service.getById(id);
-
-        if(!optional.isEmpty()){
-            Usuario usuario = optional.get();
-            atividadeService.abrirApp(usuario);
-            return ResponseEntity.of(Optional.of(usuario.ajustar()));
+            Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            return ResponseEntity.of(dto);
         }
         
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PostMapping("cadastro")
-    public ResponseEntity<Usuario> create(@RequestBody @Valid Usuario usuario){
+    @GetMapping("enterapp/{id}")
+    public ResponseEntity<UsuarioDTO> abrirApp(@PathVariable Integer id){
+        var optional = service.getById(id);
+
+        if(!optional.isEmpty()){
+            Usuario usuario = optional.get();
+            atividadeService.abrirApp(usuario);
+            Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            return ResponseEntity.of(dto);
+        }
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping("signin")
+    public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid Usuario usuario){
         var optional = service.findByEmail(usuario.getEmail());
 
         if(optional.isEmpty()){
 
             service.save(usuario);
             atividadeService.login(usuario);
+            
+            UsuarioDTO dto = new UsuarioDTO().convert(usuario);
         
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(usuario.ajustar());
+                    .body(dto);
 
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -98,7 +102,7 @@ public class UsuarioController {
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
+    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
         var optionalEmail = service.findByEmail(newUsuario.getEmail());
 
         if(!optionalEmail.isEmpty()){
@@ -112,7 +116,8 @@ public class UsuarioController {
             usuario.setId(id);
 
             service.save(usuario);
-            return ResponseEntity.ok(usuario.ajustar());
+            Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            return ResponseEntity.of(dto);
 
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

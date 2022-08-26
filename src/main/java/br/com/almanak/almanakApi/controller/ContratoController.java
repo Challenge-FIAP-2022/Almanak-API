@@ -1,6 +1,6 @@
 package br.com.almanak.almanakApi.controller;
 
-import javax.validation.Valid;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.Interface.ContratoDTO;
+import br.com.almanak.almanakApi.Interface.UsuarioDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Contrato;
 import br.com.almanak.almanakApi.model.Plano;
@@ -28,46 +30,60 @@ import br.com.almanak.almanakApi.service.UsuarioService;
 public class ContratoController {
 
     @Autowired
-    private ContratoService contService;
-
-    @Autowired
-    private UsuarioService usuarioService;
+    private ContratoService service;
 
     @Autowired
     private PlanoService planoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping
     public Page<Contrato> index(Pageable pageable){
-        return contService.listAll(pageable);
+        return service.listAll(pageable);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Contrato> show(@PathVariable Integer id){
-        return ResponseEntity.of(contService.getById(id));
+    public ResponseEntity<ContratoDTO> show(@PathVariable Integer id){
+        Optional<Contrato> opt = service.getById(id);
+
+        if(!opt.isEmpty()){
+            Optional<ContratoDTO> dto = Optional.of(new ContratoDTO().convert(opt.get()));
+            return ResponseEntity.of(dto);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
-    @GetMapping("ativo/{id}")
-    public ResponseEntity<Contrato> findByUser(@PathVariable Integer id){
-        return ResponseEntity.of(contService.findByUser(id));
+    @GetMapping("valido/{id}")
+    public ResponseEntity<ContratoDTO> findByUser(@PathVariable Integer id){
+        Optional<Contrato> opt = service.findByUser(id);
+
+        if(!opt.isEmpty()){
+            Optional<ContratoDTO> dto = Optional.of(new ContratoDTO().convert(opt.get()));
+            return ResponseEntity.of(dto);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
-    @PutMapping("contratacao/{nomePlano}")
-    public ResponseEntity<Contrato> contratacao(@RequestBody @Valid Usuario usuarioBody, @PathVariable String nomePlano){
+    @PutMapping("contrar/{nomePlano}")
+    public ResponseEntity<UsuarioDTO> contratacao(@RequestBody UsuarioDTO usuarioBody, @PathVariable String nomePlano){
         var optionalPlano = planoService.findByName(nomePlano);
+        var optionalUsuario = usuarioService.getById(usuarioBody.getId());
 
-        if(!optionalPlano.isEmpty()){
+        if(!optionalPlano.isEmpty() && !optionalUsuario.isEmpty()){
             Plano plano = optionalPlano.get();
-            var optional = usuarioService.getById(usuarioBody.getId());
+            Usuario usuario = optionalUsuario.get();
 
-            if(optional.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-            Usuario usuario = optional.get();
             Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
-            contService.save(contrato);
-            contrato.setUsuario(usuario.ajustar());
+            service.save(contrato);
+            
+            UsuarioDTO dto = new UsuarioDTO().convert(usuario);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(contrato);
+            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
 
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -75,17 +91,19 @@ public class ContratoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Contrato> destroy(@PathVariable Integer id){
-        var contratoOpt = contService.remove(id);
-        if(contratoOpt.isEmpty()){
+    public ResponseEntity<ContratoDTO> destroy(@PathVariable Integer id){
+        var opt = service.remove(id);
+        if(opt.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{
             
-            var contrato = contratoOpt.get();
+            var contrato = opt.get();
             if(contrato.getId() == null)
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+                Optional<ContratoDTO> dto = Optional.of(new ContratoDTO().convert(opt.get()));
                 
-            return ResponseEntity.ok(contrato);
+            return ResponseEntity.of(dto);
 
         }
         

@@ -1,11 +1,12 @@
 package br.com.almanak.almanakApi.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +28,8 @@ public class TipoAtividadeController {
     private TipoAtividadeService tpService;
 
     @GetMapping
-    public List<TipoAtividade> index(){
-        return tpService.listAll();
+    public Page<TipoAtividade> index(Pageable pageable){
+        return tpService.listAll(pageable);
     }
 
     @GetMapping("{id}")

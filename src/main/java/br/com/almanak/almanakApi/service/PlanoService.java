@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
@@ -16,8 +18,8 @@ public class PlanoService {
     @Autowired
     PlanoRepository repository;
 
-    public List<Plano> listAll(){
-        return repository.findAll();
+    public Page<Plano> listAll(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
     public Optional<Plano> getById(Integer id){
@@ -40,6 +42,33 @@ public class PlanoService {
     public Optional<Plano> remove(String nome){
 
         Optional<Plano> planoOptional = repository.findByName(nome);
+
+        if(!planoOptional.isEmpty()){
+
+            var plano = planoOptional.get();
+
+            if(plano.getDtEncerramento() == null){
+
+                plano.setDtEncerramento();
+                repository.save(plano);
+
+                return Optional.of(plano);
+
+            }else{
+
+                return Optional.of(new Plano());
+            }
+
+        }else{
+
+            return Optional.empty();
+        }
+            
+    }
+
+    public Optional<Plano> remove(Integer id){
+
+        Optional<Plano> planoOptional = repository.findById(id);
 
         if(!planoOptional.isEmpty()){
 

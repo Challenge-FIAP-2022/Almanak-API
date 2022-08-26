@@ -1,9 +1,10 @@
 package br.com.almanak.almanakApi.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.almanak.almanakApi.model.TipoAtividade;
@@ -15,8 +16,8 @@ public class TipoAtividadeService {
     @Autowired
     TipoAtividadeRepository repository;
 
-    public List<TipoAtividade> listAll(){
-        return repository.findAll();
+    public Page<TipoAtividade> listAll(Pageable pageable){
+        return repository.findAll(pageable);
     }
 
     public Optional<TipoAtividade> getById(Integer id){

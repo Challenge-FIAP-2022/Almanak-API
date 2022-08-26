@@ -56,6 +56,19 @@ public class JogoDTO {
         
     }
 
+    public List<JogoDTO> convertList(List<Jogo> planos){
+        try{
+            List<JogoDTO> dtos = new ArrayList<JogoDTO>();
+            for (Jogo j : planos){
+                dtos.add(new JogoDTO().convert(j));
+            }
+            return dtos;
+        }catch(Exception e){
+            return new ArrayList<JogoDTO>();
+        }
+        
+    }
+
     public Jogo build(ItemDTO dto){
         Optional<Jogo> jogo = jServiceDTO.getById(id);
 
