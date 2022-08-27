@@ -69,14 +69,19 @@ public class ContratoController {
 
     }
 
-    @PutMapping("contrar/{nomePlano}")
+    @PutMapping("contratar/{nomePlano}")
     public ResponseEntity<UsuarioDTO> contratacao(@RequestBody UsuarioDTO usuarioBody, @PathVariable String nomePlano){
         var optionalPlano = planoService.findByName(nomePlano);
         var optionalUsuario = usuarioService.getById(usuarioBody.getId());
 
+        System.out.println("PLANO: " + optionalPlano.isEmpty());
+        System.out.println("USUARIO: " + optionalUsuario.isEmpty());
+
         if(!optionalPlano.isEmpty() && !optionalUsuario.isEmpty()){
             Plano plano = optionalPlano.get();
             Usuario usuario = optionalUsuario.get();
+
+            
 
             Contrato contrato = new Contrato(usuario, plano, EN_Booleano.sim);
             service.save(contrato);
