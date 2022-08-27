@@ -25,12 +25,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tb_plano_usuario")
-@SequenceGenerator(name="contrato", sequenceName="sq_plano_usuario", allocationSize=1)
+@Table(name="tb_contrato")
+@SequenceGenerator(name="contrato", sequenceName="sq_contrato", allocationSize=1)
 public class Contrato {
 
     @Id
-    @Column(name="id_plano_usuario")
+    @Column(name="id_contrato")
     @GeneratedValue(generator="contrato", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
