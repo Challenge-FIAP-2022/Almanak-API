@@ -1,0 +1,15 @@
+insert into tb_plano_usuario values(1,null,current_date,1,1,1);
+select * from tb_plano_usuario;
+
+select
+
+u.id_usuario,
+u.nm_usuario,
+p.nm_plano,
+p.fl_valido
+
+from tb_usuario u
+left join tb_plano_usuario pu on u.id_usuario = pu.id_usuario
+left join tb_plano p on p.id_plano = pu.id_plano
+
+where p.id_plano is not null;
