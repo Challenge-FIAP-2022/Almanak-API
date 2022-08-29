@@ -24,10 +24,6 @@ public class UsuarioService {
         return repository.findById(id);
     }
 
-    public Optional<Usuario> getByIdAdj(Integer id){
-        return Optional.of(repository.findById(id).get().ajustar());
-    }
-
     public Optional<Usuario> login(String email, String senha){
         var optional = repository.login(email, senha);
         

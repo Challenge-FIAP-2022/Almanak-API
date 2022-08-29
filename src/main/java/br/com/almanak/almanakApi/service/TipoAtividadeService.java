@@ -37,6 +37,10 @@ public class TipoAtividadeService {
         return repository.abrirApp();
     }
 
+    public Optional<TipoAtividade> cadastrarCartao(){
+        return repository.cadastrarCartao();
+    }
+
     public void save(TipoAtividade tipoAtividade){
         tipoAtividade.setDtRegistro();
         repository.save(tipoAtividade);

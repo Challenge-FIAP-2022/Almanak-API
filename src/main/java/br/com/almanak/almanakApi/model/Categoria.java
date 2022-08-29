@@ -38,6 +38,12 @@ public class Categoria {
     @Column(name="nm_categoria")
     private String name;
 
+    @Column(name="lk_icone")
+    private String icone;
+
+    @Column(name="lk_image")
+    private String imagem;
+
     @Column(name="ds_categoria")
     private String desc;
 
@@ -53,11 +59,12 @@ public class Categoria {
         this.jogos.add(rel);
     }
 
-    public Categoria(Integer id, String name, String desc, LocalDateTime dtRegistro) {
-        this.id = id;
+    
+    public Categoria(String name, String icone, String imagem, String desc) {
         this.name = name;
+        this.icone = icone;
+        this.imagem = imagem;
         this.desc = desc;
-        this.dtRegistro = dtRegistro;
     }
 
     public Categoria(String name, String desc) {

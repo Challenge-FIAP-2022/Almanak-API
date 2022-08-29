@@ -47,7 +47,7 @@ public class Regra {
 
     @Enumerated(EnumType.STRING)
     @Type(type="PostgreSQLEnumType")
-    @Column(name="fl_")
+    @Column(name="fl_opcional")
     private EN_Booleano opcional;
 
     @Column(name="dt_registro")

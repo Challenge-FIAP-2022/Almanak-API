@@ -20,4 +20,7 @@ public interface TipoAtividadeRepository extends JpaRepository<TipoAtividade, In
     @Query(value="select * from tb_tipo_atividade where lower(nm_grupo) = 'login' and lower(nm_subgrupo) = 'abrir app'", nativeQuery = true) 
     Optional<TipoAtividade> abrirApp();
 
+    @Query(value="select * from tb_tipo_atividade where lower(nm_grupo) = 'cadastro' and lower(nm_subgrupo) = 'cadastro de cartao'", nativeQuery = true) 
+    Optional<TipoAtividade> cadastrarCartao();
+
 }

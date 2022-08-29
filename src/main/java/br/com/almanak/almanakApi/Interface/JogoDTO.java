@@ -3,16 +3,10 @@ package br.com.almanak.almanakApi.Interface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.almanak.almanakApi.model.Jogo;
 import br.com.almanak.almanakApi.model.JogoItemRel;
 import br.com.almanak.almanakApi.model.Regra;
-import br.com.almanak.almanakApi.service.JogoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,35 +16,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JogoDTO {
 
-    @JsonIgnore
-    @Autowired
-    JogoService jServiceDTO;
-
     private Integer id;
     private String name;
-    private Double nota = 0d;
+    private Double score = 0d;
     private List<String> categorias = new ArrayList<String>();
     private List<RegraDTO> regras = new ArrayList<RegraDTO>();
-    private List<ItensDTO> itens = new ArrayList<ItensDTO>();
+    private List<JogoItemDTO> itens = new ArrayList<JogoItemDTO>();
 
     public JogoDTO convert(Jogo jogo){
-        List<RegraDTO> regras = new ArrayList<RegraDTO>();
-        List<ItensDTO> itens = new ArrayList<ItensDTO>();
-        
+
         this.id = jogo.getId();
         this.name = jogo.getName();
-        this.nota = jogo.getNota();
         this.categorias = jogo.getNomeCategorias();
 
         for(Regra r : jogo.getRegras()){
             regras.add(new RegraDTO().convert(r));
         }
-        this.regras = regras;
 
         for(JogoItemRel i : jogo.getItens()){
-            itens.add(new ItensDTO().convert(i));
+            itens.add(new JogoItemDTO().convert(i));
         }
-        this.itens = itens;
 
         return this;
         
@@ -69,15 +54,11 @@ public class JogoDTO {
         
     }
 
-    public Jogo build(ItemDTO dto){
-        Optional<Jogo> jogo = jServiceDTO.getById(id);
-
-        if(jogo.isEmpty()){
-            return jogo.get();
-        }else{
-            return null;
-        }
-            
+    public JogoDTO(String name, List<String> categorias, List<RegraDTO> regras, List<JogoItemDTO> itens) {
+        this.name = name;
+        this.categorias = categorias;
+        this.regras = regras;
+        this.itens = itens;
     }
-
+    
 }

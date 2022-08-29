@@ -60,8 +60,9 @@ public class Atividade {
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+        }        
     }
     
 }

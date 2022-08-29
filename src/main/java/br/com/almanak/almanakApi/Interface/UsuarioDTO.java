@@ -1,13 +1,6 @@
 package br.com.almanak.almanakApi.Interface;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.almanak.almanakApi.model.Usuario;
-import br.com.almanak.almanakApi.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDTO {
-
-    @JsonIgnore
-    @Autowired
-    UsuarioService uServiceDTO;
 
     private Integer id;
     private Boolean maioridade;
@@ -37,15 +26,4 @@ public class UsuarioDTO {
         
     }
 
-    public Usuario build(UsuarioDTO dto){
-        Optional<Usuario> usuario = uServiceDTO.getById(id);
-
-        if(usuario.isEmpty()){
-            return usuario.get();
-        }else{
-            return null;
-        }
-            
-    }
-    
 }

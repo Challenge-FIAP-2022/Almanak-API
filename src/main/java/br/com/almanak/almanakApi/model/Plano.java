@@ -89,11 +89,12 @@ public class Plano {
         this.dtRegistro = dtRegistro;
     }
 
-    public Plano(@NotNull String name, String desc, Double valor, EN_Booleano valido) {
+    public Plano(@NotNull String name, String desc, Double valor) {
         this.name = name;
         this.desc = desc;
         this.valor = valor;
-        this.valido = valido;
+        if(this.getValido() == null)
+            this.valido = EN_Booleano.sim;
     }
 
     public Plano(@NotNull String name, Double valor) {
@@ -106,13 +107,15 @@ public class Plano {
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.sim;
+        }
     }
 
     public void setDtEncerramento() {
-        if (this.dtRegistro == null){
-            this.dtRegistro = LocalDateTime.now();
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
             this.valido = EN_Booleano.nao;
         }
     }

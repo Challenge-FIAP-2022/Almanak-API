@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.Interface.PlanoDTO;
 import br.com.almanak.almanakApi.Interface.UsuarioDTO;
 import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.service.AtividadeService;
@@ -52,6 +53,11 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @GetMapping("adj/{id}")
+    public ResponseEntity<Usuario> showAdj(@PathVariable Integer id){
+        return ResponseEntity.of(service.getById(id));
+    }
+
     @GetMapping("login")
     public ResponseEntity<UsuarioDTO> login(@RequestParam String email,@RequestParam String senha){
         var optional = service.login(email,senha);
@@ -80,6 +86,20 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @GetMapping("cadastrocartao/{id}")
+    public ResponseEntity<UsuarioDTO> cadastrarCartao(@PathVariable Integer id){
+        var optional = service.getById(id);
+
+        if(!optional.isEmpty()){
+            Usuario usuario = optional.get();
+            atividadeService.cadastrarCartao(usuario);
+            Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            return ResponseEntity.of(dto);
+        }
+        
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
     @PostMapping("signin")
     public ResponseEntity<UsuarioDTO> create(@RequestBody @Valid Usuario usuario){
         var optional = service.findByEmail(usuario.getEmail());
@@ -90,6 +110,11 @@ public class UsuarioController {
             atividadeService.login(usuario);
             
             UsuarioDTO dto = new UsuarioDTO().convert(usuario);
+            PlanoDTO plano = new PlanoDTO();
+            plano.setId(1);
+            plano.setName("Gamer");
+            plano.setValor(0d);
+            dto.setPlano(plano);
         
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -101,17 +126,19 @@ public class UsuarioController {
 
     }
     
-    @PutMapping("{id}")
-    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @RequestBody @Valid Usuario newUsuario){
-        var optionalEmail = service.findByEmail(newUsuario.getEmail());
+    @PutMapping()
+    public ResponseEntity<UsuarioDTO> update(@RequestBody @Valid Usuario newUsuario){
+        Integer id = newUsuario.getId();
+        var opt = service.getById(newUsuario.getId());
 
-        if(!optionalEmail.isEmpty()){
-            var optional = service.getById(id);
+        if(!opt.isEmpty()){
+            Usuario usuario = opt.get();
 
-            if(optional.isEmpty())
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            var optEmail = service.findByEmail(newUsuario.getEmail());
 
-            var usuario = optional.get();
+            if(!optEmail.isEmpty())
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
             BeanUtils.copyProperties(newUsuario, usuario);
             usuario.setId(id);
 
@@ -120,7 +147,7 @@ public class UsuarioController {
             return ResponseEntity.of(dto);
 
         }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

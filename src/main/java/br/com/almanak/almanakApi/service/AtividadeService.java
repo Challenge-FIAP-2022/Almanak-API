@@ -46,6 +46,19 @@ public class AtividadeService {
         atividade.setDtRegistro();
         repository.save(atividade);
     }
+
+    public void cadastrarCartao(Usuario usuario){
+        
+        Optional<TipoAtividade> tipoAtividade = tipoAtividadeService.cadastrarCartao();
+        Atividade atividade = new Atividade(null,null);
+        atividade.addUsuario(usuario);
+        
+        if(!tipoAtividade.isEmpty())
+            atividade.addTipoAtividade(tipoAtividade.get());
+
+        atividade.setDtRegistro();
+        repository.save(atividade);
+    }
     
     public Optional<Atividade> abrirApp(Usuario usuario){
         

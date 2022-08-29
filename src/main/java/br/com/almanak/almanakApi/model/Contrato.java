@@ -89,13 +89,15 @@ public class Contrato {
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.sim;
+        }        
     }
 
     public void setDtEncerramento() {
-        if (this.dtRegistro == null){
-            this.dtRegistro = LocalDateTime.now();
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
             this.valido = EN_Booleano.nao;
         }
     }

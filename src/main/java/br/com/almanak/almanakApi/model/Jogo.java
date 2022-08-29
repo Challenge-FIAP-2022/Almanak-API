@@ -46,6 +46,10 @@ public class Jogo {
     @Column(name="nm_jogo")
     private String name;
 
+    @Size(max=50)
+    @Column(name="lk_imagem")
+    private String link;
+
     @Column(name="nr_min_jogadores")
     private Integer minJogadores;
 
@@ -68,7 +72,7 @@ public class Jogo {
     private EN_Booleano elite;
 
     @Column(name="ds_encerramento")
-    private LocalDateTime descEncerramento;
+    private String descEncerramento;
 
     @Column(name="dt_encerramento")
     private LocalDateTime dtEncerramento;
@@ -93,7 +97,7 @@ public class Jogo {
     private List<Regra> regras = new ArrayList<Regra>();;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "jogo")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "jogo")
     private List<Avaliacao> avaliacoes = new ArrayList<Avaliacao>();
 
     @JsonIgnore
@@ -125,7 +129,7 @@ public class Jogo {
     }
 
     public Jogo(Integer id, @Size(max = 50) String name, Integer minJogadores, Integer maxJogadores,
-            EN_Booleano paraAdultos, EN_Booleano valido, EN_Booleano elite, LocalDateTime descEncerramento,
+            EN_Booleano paraAdultos, EN_Booleano valido, EN_Booleano elite, String descEncerramento,
             LocalDateTime dtEncerramento, LocalDateTime dtRegistro, Usuario usuario,
             List<JogoCategoriaRel> categorias) {
         this.id = id;
@@ -143,7 +147,7 @@ public class Jogo {
     }
 
     public Jogo(Integer id, @Size(max = 50) String name, Integer minJogadores, Integer maxJogadores,
-            EN_Booleano paraAdultos, EN_Booleano valido, EN_Booleano elite, LocalDateTime descEncerramento,
+            EN_Booleano paraAdultos, EN_Booleano valido, EN_Booleano elite, String descEncerramento,
             LocalDateTime dtEncerramento, LocalDateTime dtRegistro) {
         this.id = id;
         this.name = name;
@@ -168,32 +172,17 @@ public class Jogo {
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.sim;
+        }
     }
 
     public void setDtEncerramento() {
-        if (this.dtRegistro == null){
-            this.dtRegistro = LocalDateTime.now();
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
             this.valido = EN_Booleano.nao;
         }
-    }
-    
-    public Double getNota(){
-        if(this.nota == null){
-
-            System.out.println("METODO CERTO!!!!!!");
-
-            Double notaFinal = 0d;
-            for(Avaliacao a : avaliacoes){
-                notaFinal += a.getNota();
-            }
-
-            this.nota = notaFinal;
-
-        }
-
-        return this.nota;
     }
 
     public List<String> getNomeCategorias(){

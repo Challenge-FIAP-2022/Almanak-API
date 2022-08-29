@@ -8,10 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.almanak.almanakApi.Interface.JogoDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Jogo;
-import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.repository.JogoRepository;
 
 @Service
@@ -35,7 +33,28 @@ public class JogoService {
     public Optional<List<Jogo>> listByValid(EN_Booleano flag){
         return repository.listByValid(flag);
     }
-    
+
+    public Optional<Double> findScore(String name){
+        return repository.findScore(name);
+    }
+
+    public Optional<Double> findScore(Integer id){
+        return repository.findScore(id);
+    }
+
+/*  
+    public Optional<List<Jogo>> listByCategoria(List<String> categorias){
+        for(String s : categorias){
+            s = s.toLowerCase();
+        }
+        return repository.listByCategoria(categorias);
+    }
+
+    public Optional<List<Jogo>> listByCategoria(String categoria){
+        return repository.listByCategoria(categoria);
+    }
+ 
+ 
     public Optional<List<JogoDTO>> findAllForUser(Usuario usuario, String nomePlano){
 
         usuario.setMaioridade();
@@ -46,7 +65,7 @@ public class JogoService {
         return Optional.of(new JogoDTO().convertList(jogos.get()));
 
     }
-
+*/
     public void save(Jogo jogo){
         jogo.setDtRegistro();
         repository.save(jogo);

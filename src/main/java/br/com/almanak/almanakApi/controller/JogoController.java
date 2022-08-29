@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,12 @@ public class JogoController {
         Optional<Jogo> opt = service.getById(id);
 
         if(!opt.isEmpty()){
+            
             Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(opt.get()));
+            Optional<Double> optScore = service.findScore(opt.get().getId());
+            if(!optScore.isEmpty())
+                dto.get().setScore(optScore.get());
+
             return ResponseEntity.of(dto);
         }
 
@@ -51,58 +57,110 @@ public class JogoController {
 
         if(!opts.isEmpty()){
             List<Jogo> jogos = opts.get();
-            List<JogoDTO> dtos = new JogoDTO().convertList(jogos);
-            return ResponseEntity.ok(dtos);
+            List<JogoDTO> dtoList = new ArrayList<JogoDTO>();
+
+            for(Jogo j : jogos){
+                JogoDTO dto = new JogoDTO().convert(j);
+
+                Optional<Double> optScore = service.findScore(j.getId());
+                if(!optScore.isEmpty())
+                    dto.setScore(optScore.get());
+
+                dto.setRegras(null);
+                dto.setItens(null);
+
+                dtoList.add(dto);
+
+            }
+    
+            return ResponseEntity.ok().body(dtoList);
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        
     }
         
     @GetMapping("nome/{nome}")
     public ResponseEntity<JogoDTO> findByName(@PathVariable String nome){
-        Optional<Jogo> jogo = service.findByName(nome);
-        
-        if(!jogo.isEmpty())
-            return ResponseEntity.ok(new JogoDTO().convert(jogo.get()));
+        Optional<Jogo> opt = service.findByName(nome);
+
+        if(!opt.isEmpty()){
+            
+            Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(opt.get()));
+            Optional<Double> optScore = service.findScore(opt.get().getId());
+            if(!optScore.isEmpty())
+                dto.get().setScore(optScore.get());
+
+            return ResponseEntity.of(dto);
+        }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
-
-    /*
-    @PostMapping
-    public ResponseEntity<JogoDTO> create(@RequestBody @Valid Jogo jogo){
-        var optionalName = service.findByName(jogo.getName());
-        if(optionalName.isEmpty()){
-            service.save(jogo);
-            JogoDTO dto = new JogoDTO().convert(jogo);
-            
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(dto);
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
-    @PutMapping("{id}")
-    public ResponseEntity<JogoDTO> update(@PathVariable Integer id, @RequestBody @Valid Jogo newJogo){
-        var optional = service.getById(id);
-
-        if(optional.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        var jogo = optional.get();
-        BeanUtils.copyProperties(newJogo, jogo);
-        jogo.setId(id);
-
-        service.save(jogo);
-        Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(jogo));
-
-        return ResponseEntity.of(dto);
+/*
+    @GetMapping("categoria/{nomeCategoria}")
+    public ResponseEntity<List<JogoDTO>> ffindByCategoria(@PathVariable String categoria){
+        Optional<List<Jogo>> opt = service.listByCategoria(categoria);
         
+        if(!opt.isEmpty()){
+            List<Jogo> optList = opt.get();
+            List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
+
+            for(Jogo j : optList){
+                JogoDTO jogoDTO = new JogoDTO().convert(j);
+                Optional<Double> optScore = service.findScore(j.getId());
+
+                if(!optScore.isEmpty())
+                    jogoDTO.setScore(optScore.get());
+
+                jogoDTO.setRegras(null);
+                jogoDTO.setCategorias(null);
+                jogoDTO.setItens(null);
+
+                jogosDTO.add(jogoDTO);
+
+            }
+
+            return ResponseEntity.ok(jogosDTO);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
     }
 
-    */
+
+    @GetMapping("categoria")
+    public ResponseEntity<List<JogoDTO>> findByListCategoria(@RequestBody List<String> categorias){
+        Optional<List<Jogo>> opt = service.listByCategoria(categorias);
+        
+        if(!opt.isEmpty()){
+            List<Jogo> optList = opt.get();
+            List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
+
+
+            for(Jogo j : optList){
+                JogoDTO jogoDTO = new JogoDTO().convert(j);
+                Optional<Double> optScore = service.findScore(j.getId());
+
+                if(!optScore.isEmpty())
+                    jogoDTO.setScore(optScore.get());
+
+                jogoDTO.setRegras(null);
+                jogoDTO.setCategorias(null);
+                
+                jogoDTO.setItens(null);
+
+                jogosDTO.add(jogoDTO);
+
+            }
+
+            return ResponseEntity.ok(jogosDTO);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    }
+*/
 
     @DeleteMapping("byname/{nome}")
     public ResponseEntity<Jogo> destroyByName(@PathVariable String nome){
@@ -121,9 +179,9 @@ public class JogoController {
         
     }
 
-    @DeleteMapping("{nome}")
-    public ResponseEntity<Jogo> destroy(@PathVariable String nome){
-        var jogoResponse = service.remove(nome);
+    @DeleteMapping("{id}")
+    public ResponseEntity<Jogo> destroy(@PathVariable Integer id){
+        var jogoResponse = service.remove(id);
         if(jogoResponse.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }else{

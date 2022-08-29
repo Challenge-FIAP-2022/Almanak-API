@@ -2,7 +2,6 @@ package br.com.almanak.almanakApi.Interface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +20,7 @@ public class PlanoDTO {
 
     @JsonIgnore
     @Autowired
-    PlanoService pServiceDTO;
+    private PlanoService pServiceDTO;
 
     private Integer id;
     private String name;
@@ -54,15 +53,10 @@ public class PlanoDTO {
         
     }
 
-    public Plano build(PlanoDTO dto){
-        Optional<Plano> item = pServiceDTO.getById(id);
-
-        if(item.isEmpty()){
-            return item.get();
-        }else{
-            return null;
-        }
-            
+    public PlanoDTO(String name, String desc, Double valor) {
+        this.name = name;
+        this.desc = desc;
+        this.valor = valor;
     }
-    
+
 }

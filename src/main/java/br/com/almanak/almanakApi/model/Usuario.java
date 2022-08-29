@@ -78,18 +78,6 @@ public class Usuario {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
     private List<Avaliacao> avaliacoes = new ArrayList<Avaliacao>();
 
-
-    public Usuario ajustar(){
-        this.setMaioridade();
-
-        Usuario usuario = new Usuario();
-        usuario.setId(this.id);
-        usuario.setMaioridade(this.maioridade);
-        
-        return usuario;
-    
-    }
-
     public void addToList(Contrato contrato){
         contrato.setUsuario(this);
         this.getContratos().add(contrato);
