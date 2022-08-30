@@ -19,6 +19,7 @@ import br.com.almanak.almanakApi.Interface.JogoDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Jogo;
 import br.com.almanak.almanakApi.service.JogoService;
+import br.com.almanak.almanakApi.utilities.Calculadora;
 
 
 @Controller
@@ -41,9 +42,11 @@ public class JogoController {
             
             Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(opt.get()));
             Optional<Double> optScore = service.findScore(opt.get().getId());
-            if(!optScore.isEmpty())
-                dto.get().setScore(optScore.get());
-
+            if(!optScore.isEmpty()){
+                Double score = Calculadora.ajusteNota(optScore.get());
+                dto.get().setScore(score);
+            }
+            
             return ResponseEntity.of(dto);
         }
 
@@ -63,8 +66,10 @@ public class JogoController {
                 JogoDTO dto = new JogoDTO().convert(j);
 
                 Optional<Double> optScore = service.findScore(j.getId());
-                if(!optScore.isEmpty())
-                    dto.setScore(optScore.get());
+                if(!optScore.isEmpty()){
+                    Double score = Calculadora.ajusteNota(optScore.get());
+                    dto.setScore(score);
+                }
 
                 dto.setRegras(null);
                 dto.setItens(null);
@@ -88,8 +93,10 @@ public class JogoController {
             
             Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(opt.get()));
             Optional<Double> optScore = service.findScore(opt.get().getId());
-            if(!optScore.isEmpty())
-                dto.get().setScore(optScore.get());
+            if(!optScore.isEmpty()){
+                Double score = Calculadora.ajusteNota(optScore.get());
+                dto.get().setScore(score);
+            }
 
             return ResponseEntity.of(dto);
         }
@@ -110,8 +117,10 @@ public class JogoController {
                 JogoDTO jogoDTO = new JogoDTO().convert(j);
                 Optional<Double> optScore = service.findScore(j.getId());
 
-                if(!optScore.isEmpty())
-                    jogoDTO.setScore(optScore.get());
+                if(!optScore.isEmpty()){
+                    Double score = Calculadora.ajusteNota(optScore.get());
+                    jogoDTO.setScore(score);
+                }
 
                 jogoDTO.setRegras(null);
                 jogoDTO.setCategorias(null);
@@ -142,8 +151,10 @@ public class JogoController {
                 JogoDTO jogoDTO = new JogoDTO().convert(j);
                 Optional<Double> optScore = service.findScore(j.getId());
 
-                if(!optScore.isEmpty())
-                    jogoDTO.setScore(optScore.get());
+                if(!optScore.isEmpty()){
+                    Double score = Calculadora.ajusteNota(optScore.get());
+                    jogoDTO.setScore(score);
+                }
 
                 jogoDTO.setRegras(null);
                 jogoDTO.setCategorias(null);

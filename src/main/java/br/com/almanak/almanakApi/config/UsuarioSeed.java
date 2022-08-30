@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
 
 import br.com.almanak.almanakApi.model.Usuario;
 import br.com.almanak.almanakApi.repository.UsuarioRepository;

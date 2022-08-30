@@ -4,7 +4,9 @@ package br.com.almanak.almanakApi.Interface;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.almanak.almanakApi.model.Categoria;
 import br.com.almanak.almanakApi.model.Jogo;
+import br.com.almanak.almanakApi.model.JogoCategoriaRel;
 import br.com.almanak.almanakApi.model.JogoItemRel;
 import br.com.almanak.almanakApi.model.Regra;
 import lombok.AllArgsConstructor;
@@ -19,7 +21,7 @@ public class JogoDTO {
     private Integer id;
     private String name;
     private Double score = 0d;
-    private List<String> categorias = new ArrayList<String>();
+    private List<CategoriaDTO> categorias = new ArrayList<CategoriaDTO>();
     private List<RegraDTO> regras = new ArrayList<RegraDTO>();
     private List<JogoItemDTO> itens = new ArrayList<JogoItemDTO>();
 
@@ -27,7 +29,11 @@ public class JogoDTO {
 
         this.id = jogo.getId();
         this.name = jogo.getName();
-        this.categorias = jogo.getNomeCategorias();
+        
+        for(JogoCategoriaRel jc : jogo.getCategorias()){
+            Categoria categoria = jc.getCategoria();
+            categorias.add(new CategoriaDTO().convert(categoria));
+        }
 
         for(Regra r : jogo.getRegras()){
             regras.add(new RegraDTO().convert(r));
@@ -54,7 +60,7 @@ public class JogoDTO {
         
     }
 
-    public JogoDTO(String name, List<String> categorias, List<RegraDTO> regras, List<JogoItemDTO> itens) {
+    public JogoDTO(String name, List<CategoriaDTO> categorias, List<RegraDTO> regras, List<JogoItemDTO> itens) {
         this.name = name;
         this.categorias = categorias;
         this.regras = regras;
