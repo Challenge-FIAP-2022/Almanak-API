@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ChatBotController {
 
     @GetMapping
-    public Object index(){
+    public Boolean index(){
         return true;
     }
     
