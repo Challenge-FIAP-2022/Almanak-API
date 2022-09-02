@@ -60,6 +60,11 @@ public class Item {
         this.jogos.add(rel);
     }
 
+    public Item(EN_Tipo_Item tipo, String name) {
+        this.tipo = tipo;
+        this.name = name;
+    }
+
     public void setDtRegistro() {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();

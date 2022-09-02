@@ -21,6 +21,8 @@ public class JogoDTO {
     private Integer id;
     private String name;
     private Double score = 0d;
+    private Integer minJogadores;
+    private Integer maxJogadores;
     private List<CategoriaDTO> categorias = new ArrayList<CategoriaDTO>();
     private List<RegraDTO> regras = new ArrayList<RegraDTO>();
     private List<JogoItemDTO> itens = new ArrayList<JogoItemDTO>();
@@ -29,6 +31,8 @@ public class JogoDTO {
 
         this.id = jogo.getId();
         this.name = jogo.getName();
+        this.minJogadores = jogo.getMinJogadores();
+        this.maxJogadores = jogo.getMaxJogadores();
         
         for(JogoCategoriaRel jc : jogo.getCategorias()){
             Categoria categoria = jc.getCategoria();
@@ -47,24 +51,15 @@ public class JogoDTO {
         
     }
 
-    public List<JogoDTO> convertList(List<Jogo> planos){
-        try{
-            List<JogoDTO> dtos = new ArrayList<JogoDTO>();
-            for (Jogo j : planos){
-                dtos.add(new JogoDTO().convert(j));
-            }
-            return dtos;
-        }catch(Exception e){
-            return new ArrayList<JogoDTO>();
-        }
-        
-    }
-
-    public JogoDTO(String name, List<CategoriaDTO> categorias, List<RegraDTO> regras, List<JogoItemDTO> itens) {
+    public JogoDTO(String name, Integer minJogadores, Integer maxJogadores, List<CategoriaDTO> categorias,
+            List<RegraDTO> regras, List<JogoItemDTO> itens) {
         this.name = name;
+        this.minJogadores = minJogadores;
+        this.maxJogadores = maxJogadores;
         this.categorias = categorias;
         this.regras = regras;
         this.itens = itens;
     }
+
     
 }

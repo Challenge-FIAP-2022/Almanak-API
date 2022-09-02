@@ -56,7 +56,7 @@ public class ContratoController {
 
     }
 
-    @GetMapping("valido/{id}")
+    @GetMapping("valido/{userID}")
     public ResponseEntity<ContratoDTO> findByUser(@PathVariable Integer id){
         Optional<Contrato> opt = service.findByUser(id);
 

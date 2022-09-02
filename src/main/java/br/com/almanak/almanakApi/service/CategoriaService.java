@@ -25,16 +25,17 @@ public class CategoriaService {
         return repository.findAll();
     }
 
-    public Optional<Categoria> getById(Integer id){
+    public Optional<Categoria> findById(Integer id){
         return repository.findById(id);
-    }
-
-    public void save(Categoria contrato){
-        contrato.setDtRegistro();
-        repository.save(contrato);
     }
 
     public Optional<Categoria> findByName (String name){
         return repository.findByName(name);
     }
+
+    public void save(Categoria categoria){
+        categoria.setDtRegistro();
+        repository.save(categoria);
+    }
+
 }

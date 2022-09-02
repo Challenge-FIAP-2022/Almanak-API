@@ -12,20 +12,32 @@ public class CategoriaDTO {
 
     private Integer id;
     private String name;
+    private String desc;
     private String icone;
     private String imagem;
-    private String desc;
 
     public CategoriaDTO convert(Categoria categoria){
         
         this.id = categoria.getId();
         this.name = categoria.getName();
+        this.desc = categoria.getDesc();
         this.icone = categoria.getIcone();
         this.imagem = categoria.getImagem();
-        this.desc = categoria.getDesc();
         
         return this;
         
+    }
+
+    public CategoriaDTO(String name, String desc) {
+        this.name = name;
+        this.desc = desc;
+    }
+
+    public CategoriaDTO(String name, String desc, String icone, String imagem) {
+        this.name = name;
+        this.desc = desc;
+        this.icone = icone;
+        this.imagem = imagem;
     }
     
 }

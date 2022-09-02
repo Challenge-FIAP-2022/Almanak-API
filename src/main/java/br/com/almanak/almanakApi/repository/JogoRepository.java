@@ -28,10 +28,10 @@ public interface JogoRepository extends JpaRepository<Jogo, Integer> {
     @Query(value="select fn_nota_jogo(?1, current_date)", nativeQuery = true) 
     Optional<Double> findScore(Integer id);
 
-    // @Query(value="select j.* from tb_jogo j left join tb_jogo_categoria jc on j.id_jogo = jc.id_jogo left join tb_categoria c on jc.id_categoria = c.id_categoria where lower(c.nm_categoria) in ?1", nativeQuery = true) 
-    // Optional<List<Jogo>> listByCategoria(List<String> categorias);
+    @Query(value="select * from tb_jogo j left join tb_jogo_categoria jc on j.id_jogo = jc.id_jogo left join tb_categoria c on jc.id_categoria = c.id_categoria where lower(c.nm_categoria) = lower(?1)", nativeQuery = true) 
+    Optional<List<Jogo>> listByCategoria(String categorias);
 
-    // @Query(value="select j.* from tb_jogo j left join tb_jogo_categoria jc on j.id_jogo = jc.id_jogo left join tb_categoria c on jc.id_categoria = c.id_categoria where lower(c.nm_categoria) = lower(?1)", nativeQuery = false) 
-    // Optional<List<Jogo>> listByCategoria(String categorias);
+    @Query(value="select j from Jogo j join fetch j.categorias cr join fetch cr.categoria c where c.name in (?1)", nativeQuery = false) 
+    Optional<List<Jogo>> listByListCategoria(List<String> categorias);
 
 }

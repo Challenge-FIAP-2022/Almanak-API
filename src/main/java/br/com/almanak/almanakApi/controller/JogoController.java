@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.almanak.almanakApi.Interface.JogoDTO;
@@ -36,7 +37,7 @@ public class JogoController {
 
     @GetMapping("{id}")
     public ResponseEntity<JogoDTO> show(@PathVariable Integer id){
-        Optional<Jogo> opt = service.getById(id);
+        Optional<Jogo> opt = service.findById(id);
 
         if(!opt.isEmpty()){
             
@@ -104,8 +105,8 @@ public class JogoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
-/*
-    @GetMapping("categoria/{nomeCategoria}")
+
+    @GetMapping("categoria/{categoria}")
     public ResponseEntity<List<JogoDTO>> ffindByCategoria(@PathVariable String categoria){
         Optional<List<Jogo>> opt = service.listByCategoria(categoria);
         
@@ -121,9 +122,8 @@ public class JogoController {
                     Double score = Calculadora.ajusteNota(optScore.get());
                     jogoDTO.setScore(score);
                 }
-
+                                
                 jogoDTO.setRegras(null);
-                jogoDTO.setCategorias(null);
                 jogoDTO.setItens(null);
 
                 jogosDTO.add(jogoDTO);
@@ -137,15 +137,13 @@ public class JogoController {
 
     }
 
-
     @GetMapping("categoria")
-    public ResponseEntity<List<JogoDTO>> findByListCategoria(@RequestBody List<String> categorias){
-        Optional<List<Jogo>> opt = service.listByCategoria(categorias);
+    public ResponseEntity<List<JogoDTO>> listByListCategoria(@RequestBody List<String> categorias){
+        Optional<List<Jogo>> opt = service.listByListCategoria(categorias);
         
         if(!opt.isEmpty()){
             List<Jogo> optList = opt.get();
             List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
-
 
             for(Jogo j : optList){
                 JogoDTO jogoDTO = new JogoDTO().convert(j);
@@ -155,10 +153,8 @@ public class JogoController {
                     Double score = Calculadora.ajusteNota(optScore.get());
                     jogoDTO.setScore(score);
                 }
-
+                                
                 jogoDTO.setRegras(null);
-                jogoDTO.setCategorias(null);
-                
                 jogoDTO.setItens(null);
 
                 jogosDTO.add(jogoDTO);
@@ -171,9 +167,48 @@ public class JogoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
-*/
+    
+//-----------------------------------------------------------------------------------------------
+/*
+    @PostMapping
+    public ResponseEntity<JogoDTO> create(@RequestBody @Valid JogoDTO jogoDTO){
 
-    @DeleteMapping("byname/{nome}")
+        Optional<Jogo> opt = service.findByName(jogoDTO.getName());
+
+        if(opt.isEmpty()){
+
+            Categoria jogo  = new Categoria(jogoDTO.getName(), jogoDTO.getIcone(), jogoDTO.getImagem(), jogoDTO.getDesc());
+            service.save(jogo);
+            JogoDTO dto = new JogoDTO().convert(jogo);
+            
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(dto);
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PutMapping()
+    public ResponseEntity<JogoDTO> update(@RequestBody @Valid Jogo newJogo){
+        Optional<Categoria> opt = service.findById(newJogo.getId());
+
+        if(opt.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        Categoria categoria = opt.get();
+        BeanUtils.copyProperties(newJogo, categoria);
+
+        service.save(categoria);
+        Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(categoria));
+
+        return ResponseEntity.of(dto);
+        
+    }
+ */
+//-----------------------------------------------------------------------------------------------
+
+    @DeleteMapping("nome/{nome}")
     public ResponseEntity<Jogo> destroyByName(@PathVariable String nome){
         var jogoResponse = service.remove(nome);
         if(jogoResponse.isEmpty()){

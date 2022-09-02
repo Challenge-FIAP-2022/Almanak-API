@@ -22,7 +22,7 @@ public class JogoService {
         return repository.findAll(pageable);
     }
 
-    public Optional<Jogo> getById(Integer id){
+    public Optional<Jogo> findById(Integer id){
         return repository.findById(id);
     }
 
@@ -42,30 +42,19 @@ public class JogoService {
         return repository.findScore(id);
     }
 
-/*  
-    public Optional<List<Jogo>> listByCategoria(List<String> categorias){
-        for(String s : categorias){
-            s = s.toLowerCase();
-        }
-        return repository.listByCategoria(categorias);
-    }
-
     public Optional<List<Jogo>> listByCategoria(String categoria){
         return repository.listByCategoria(categoria);
     }
- 
- 
-    public Optional<List<JogoDTO>> findAllForUser(Usuario usuario, String nomePlano){
 
-        usuario.setMaioridade();
-        EN_Booleano maioridade = usuario.isMaioridade() ? EN_Booleano.sim : EN_Booleano.nao;
-        EN_Booleano elite = (nomePlano.equals("Elite")) ? EN_Booleano.sim : EN_Booleano.nao;
-        Optional<List<Jogo>> jogos =  repository.findAllForUser(maioridade, elite);
+    public Optional<List<Jogo>> listByListCategoria(List<String> categorias){
 
-        return Optional.of(new JogoDTO().convertList(jogos.get()));
+        for(String s : categorias){
+            s = s.toLowerCase();
+        }
 
+        return repository.listByListCategoria(categorias);
     }
-*/
+
     public void save(Jogo jogo){
         jogo.setDtRegistro();
         repository.save(jogo);
