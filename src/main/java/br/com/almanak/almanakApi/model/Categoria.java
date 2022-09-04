@@ -41,7 +41,7 @@ public class Categoria {
     @Column(name="lk_icone")
     private String icone;
 
-    @Column(name="lk_image")
+    @Column(name="lk_imagem")
     private String imagem;
 
     @Column(name="ds_categoria")
