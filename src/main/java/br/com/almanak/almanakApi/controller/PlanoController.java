@@ -88,16 +88,15 @@ public class PlanoController {
         }
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<PlanoDTO> update(@PathVariable Integer id, @RequestBody @Valid Plano newPlano){
-        var optional = service.getById(id);
+    @PutMapping
+    public ResponseEntity<PlanoDTO> update(@RequestBody @Valid Plano newPlano){
+        var optional = service.getById(newPlano.getId());
 
         if(optional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         var plano = optional.get();
         BeanUtils.copyProperties(newPlano, plano);
-        plano.setId(id);
 
         service.save(plano);
         Optional<PlanoDTO> dto = Optional.of(new PlanoDTO().convert(plano));
