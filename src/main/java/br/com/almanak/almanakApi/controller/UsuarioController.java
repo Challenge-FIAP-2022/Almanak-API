@@ -136,7 +136,7 @@ public class UsuarioController {
 
             var optEmail = service.findByEmail(newUsuario.getEmail());
 
-            if(!optEmail.isEmpty())
+            if(optEmail.isEmpty())
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
             BeanUtils.copyProperties(newUsuario, usuario);
