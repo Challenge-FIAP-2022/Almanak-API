@@ -27,13 +27,14 @@ Link: https://almanak-db-report.herokuapp.com/
 
 Como panorama geral da aplicação, vale a pena entender que nenhum dado é deltado, apenas flagado como não mais valido e registrado uma data de encerramento. Utilizamos esse mecanismo pra termos uma visão ampla do histórico da aplicação.
 
-Para poder visualizar todos os testes que realizamos na API basta acessar o arquivo do <a href="/Insomnia_Tests.json">Insomnia</a> .
+Para poder visualizar todos os testes que realizamos na API basta acessar o arquivo do <a href="Insomnia_Tests.json">Insomnia</a> .
 
-Objeto	| Endpoint File	| Descrição	| 
---- 	| --- 			| ---		| 
-Seconds | 301 			| 283 		|
-
-<hr>
-<br>
-
-
+Classe de Endpoint												| Descrição																				|
+--- 															| ---																					|
+301 															| Endpoints para manipulação de dados dos usuários.										|
+301 															| Endpoints para manipulação de dados dos planos que o usuário pode estar atrelado.		|
+<a href="/Documentation/Atividade/README.md">Atividade</a>		| Endpoints para rastreamento do usuário no uso do app.									|
+301 															| Endpoints para listagem dos tipos de atividade mapeadas.								|
+301 															| Endpoints para manipulação de dados dos Jogos presentes do app.						|
+301 															| Endpoints para manipulação de dados das categorias que os jogos podem estar atrelados.|
+301 															| Endpoints para manipulação de dados dos itens que os jogos podem possuir.				|
