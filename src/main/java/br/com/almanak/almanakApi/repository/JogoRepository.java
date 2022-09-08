@@ -22,4 +22,22 @@ public interface JogoRepository extends JpaRepository<Jogo, Integer> {
     @Query(value="select * from tb_jogo where lower(nm_jogo) = lower(?1)", nativeQuery = true) 
     Optional<Jogo> findByName(String nome);
 
+    @Query(value="select fn_nota_jogo(?1, current_date)", nativeQuery = true) 
+    Optional<Double> findScore(String name);
+
+    @Query(value="select fn_nota_jogo(?1, current_date)", nativeQuery = true) 
+    Optional<Double> findScore(Integer id);
+
+    @Query(value="select * from tb_jogo j left join tb_jogo_categoria jc on j.id_jogo = jc.id_jogo left join tb_categoria c on jc.id_categoria = c.id_categoria where lower(c.nm_categoria) = lower(?1)", nativeQuery = true) 
+    Optional<List<Jogo>> listByCategoria(String categorias);
+
+    @Query(value="select j from Jogo j join fetch j.categorias cr join fetch cr.categoria c where c.name in (?1)", nativeQuery = false) 
+    Optional<List<Jogo>> listByListCategoria(List<String> categorias);
+
+    // @Query(value="select j from Jogo j join fetch j.categorias cr join fetch cr.categoria c join fetch j.itens ir join fetch ir.item i where 'n' = ?1", nativeQuery = false) 
+    // Optional<List<Jogo>> listByListFilters(String filter);
+
+    @Query(value="select * from fn_jogos_recomendados(?1);", nativeQuery = true) 
+    Optional<List<Jogo>> listRecommended(Integer id);
+
 }

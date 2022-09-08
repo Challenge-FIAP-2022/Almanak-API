@@ -17,16 +17,16 @@ import br.com.almanak.almanakApi.service.AtividadeService;
 public class AtividadeController {
 
     @Autowired
-    private AtividadeService tpService;
+    private AtividadeService service;
 
     @GetMapping
     public Page<Atividade> index(Pageable pageable){
-        return tpService.listAll(pageable);
+        return service.listAll(pageable);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Atividade> show(@PathVariable Integer id){
-        return ResponseEntity.of(tpService.getById(id));
+        return ResponseEntity.of(service.getById(id));
     }
 
 }

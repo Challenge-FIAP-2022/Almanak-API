@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -63,32 +64,24 @@ public class Usuario {
     private boolean maioridade;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Atividade> atividades = new ArrayList<Atividade>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Jogo> jogos = new ArrayList<Jogo>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Avaliacao> avaliacoes = new ArrayList<Avaliacao>();
 
-
-    public Usuario ajustar(){
-        this.setMaioridade();
-
-        Usuario usuario = new Usuario();
-        usuario.setId(this.id);
-        usuario.setMaioridade(this.maioridade);
-        
-        return usuario;
-    
-    }
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
+    private List<UsuarioGrupoRel> grupos  = new ArrayList<UsuarioGrupoRel>();
 
     public void addToList(Contrato contrato){
         contrato.setUsuario(this);
@@ -108,6 +101,11 @@ public class Usuario {
     public void addToList(Avaliacao avaliacao){
         avaliacao.setUsuario(this);
         this.getAvaliacoes().add(avaliacao);
+    }
+
+    public void addToList(UsuarioGrupoRel rel){
+        rel.setUsuario(this);
+        this.grupos.add(rel);
     }
 
     public Usuario(Integer id, @Size(max = 50) String name, @Size(min = 12, max = 50) String email,
@@ -172,6 +170,20 @@ public class Usuario {
         }
         
         return plano;
+
+    }
+
+    public Grupo getGrupoValido() {
+        Grupo grupo = new Grupo();
+
+        this.getGrupos();
+        for(UsuarioGrupoRel g : grupos){
+            if(g.getValido() == EN_Booleano.sim){
+                grupo = g.getGrupo();
+            }
+        }
+        
+        return grupo;
 
     }
 

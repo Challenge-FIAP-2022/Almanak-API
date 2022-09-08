@@ -1,14 +1,7 @@
 package br.com.almanak.almanakApi.Interface;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Regra;
-import br.com.almanak.almanakApi.service.RegraService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegraDTO {
-
-    @JsonIgnore
-    @Autowired
-    RegraService rServiceDTO;
 
     private Integer id;
     private String nome;
@@ -40,15 +29,11 @@ public class RegraDTO {
         
     }
 
-    public Regra build(RegraDTO dto){
-        Optional<Regra> item = rServiceDTO.getById(id);
-
-        if(item.isEmpty()){
-            return item.get();
-        }else{
-            return null;
-        }
-            
+    public RegraDTO(String nome, Integer posicao, String desc, EN_Booleano opcional) {
+        this.nome = nome;
+        this.posicao = posicao;
+        this.desc = desc;
+        this.opcional = opcional;
     }
 
 }

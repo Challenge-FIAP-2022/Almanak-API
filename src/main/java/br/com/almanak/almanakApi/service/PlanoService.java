@@ -74,7 +74,7 @@ public class PlanoService {
 
             var plano = planoOptional.get();
 
-            if(plano.getDtEncerramento() == null){
+            if(plano.getValido() == EN_Booleano.sim){
 
                 plano.setDtEncerramento();
                 repository.save(plano);

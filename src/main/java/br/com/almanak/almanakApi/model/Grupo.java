@@ -20,57 +20,46 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
 @Entity
-@Table(name="tb_categoria")
-@SequenceGenerator(name="categoria", sequenceName="sq_categoria", allocationSize=1)
-public class Categoria {
+@Table(name="tb_grupo")
+@SequenceGenerator(name="grupo", sequenceName="sq_grupo", allocationSize=1)
+public class Grupo {
 
     @Id
-    @Column(name="id_categoria")
-    @GeneratedValue(generator="categoria", strategy = GenerationType.SEQUENCE)
+    @Column(name="id_grupo")
+    @GeneratedValue(generator="grupo", strategy = GenerationType.SEQUENCE)
     private Integer id;
     
-    @Column(name="nm_categoria")
+    @Column(name="nm_grupo")
     private String name;
-
-    @Column(name="lk_icone")
-    private String icone;
-
-    @Column(name="lk_imagem")
-    private String imagem;
-
-    @Column(name="ds_categoria")
-    private String desc;
 
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="categoria", cascade = CascadeType.ALL)
-    private List<JogoCategoriaRel> jogos  = new ArrayList<JogoCategoriaRel>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="grupo", cascade = CascadeType.ALL)
+    private List<JogoGrupoRel> jogos  = new ArrayList<JogoGrupoRel>();
+    
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="grupo", cascade = CascadeType.ALL)
+    private List<UsuarioGrupoRel> usuarios  = new ArrayList<UsuarioGrupoRel>();
 
-    public void addToList(JogoCategoriaRel rel){
-        rel.setCategoria(this);
+    public void addToList(JogoGrupoRel rel){
+        rel.setGrupo(this);
         this.jogos.add(rel);
     }
 
-    
-    public Categoria(String name, String icone, String imagem, String desc) {
-        this.name = name;
-        this.icone = icone;
-        this.imagem = imagem;
-        this.desc = desc;
+    public void addToList(UsuarioGrupoRel rel){
+        rel.setGrupo(this);
+        this.usuarios.add(rel);
     }
 
-    public Categoria(String name, String desc) {
+    public Grupo(String name) {
         this.name = name;
-        this.desc = desc;
     }
 
     public void setDtRegistro() {

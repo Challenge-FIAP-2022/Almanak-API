@@ -25,13 +25,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tb_contrato")
-@SequenceGenerator(name="contrato", sequenceName="sq_contrato", allocationSize=1)
-public class Contrato {
+@Table(name="tb_usuario_grupo")
+@SequenceGenerator(name="usuarioGrupo", sequenceName="sq_usuario_grupo", allocationSize=1)
+public class UsuarioGrupoRel {
 
     @Id
-    @Column(name="id_contrato")
-    @GeneratedValue(generator="contrato", strategy = GenerationType.SEQUENCE)
+    @Column(name="id_usuario_grupo")
+    @GeneratedValue(generator="usuarioGrupo", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
@@ -50,49 +50,22 @@ public class Contrato {
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name="id_plano")
-    private Plano plano;
-
-    public void addDependencies(Usuario usuario, Plano plano){
-        usuario.addToList(this);
-        plano.addToList(this);
-    }
-
-    public void addPlano(Plano plano){
-        plano.addToList(this);
-    }
+    @JoinColumn(name="id_grupo")
+    private Grupo grupo;
 
     public void addUsuario(Usuario usuario){
         usuario.addToList(this);
     }
 
-    public Contrato(Integer id, Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtEncerramento,
-        LocalDateTime dtRegistro) {
-        this.id = id;
-        this.usuario = usuario;
-        this.plano = plano;
-        this.valido = valido;
-        this.dtEncerramento = dtEncerramento;
-        this.dtRegistro = dtRegistro;
-    }
-    
-    public Contrato(Usuario usuario, Plano plano, EN_Booleano valido, LocalDateTime dtRegistro) {
-        this.usuario = usuario;
-        this.plano = plano;
-        this.valido = valido;
-        this.dtRegistro = dtRegistro;
-    }
-
-    public Contrato(Usuario usuario, Plano plano, EN_Booleano valido) {
-        this.addDependencies(usuario, plano);
-        this.valido = valido;
+    public void addGrupo(Grupo grupo){
+        grupo.addToList(this);
     }
 
     public void setDtRegistro() {
         if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
             this.valido = EN_Booleano.sim;
-        }        
+        }
     }
 
     public void setDtEncerramento() {

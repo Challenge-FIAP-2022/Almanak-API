@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,12 +53,17 @@ public class Item {
     private LocalDateTime dtRegistro;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="item")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="item", cascade = CascadeType.ALL)
     private List<JogoItemRel> jogos  = new ArrayList<JogoItemRel>();
 
     public void addToList(JogoItemRel rel){
         rel.setItem(this);
         this.jogos.add(rel);
+    }
+
+    public Item(EN_Tipo_Item tipo, String name) {
+        this.tipo = tipo;
+        this.name = name;
     }
 
     public void setDtRegistro() {

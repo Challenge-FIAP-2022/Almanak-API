@@ -16,8 +16,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,61 +25,54 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tb_regra")
-@SequenceGenerator(name="regra", sequenceName="sq_regra", allocationSize=1)
-public class Regra {
+@Table(name="tb_jogo_grupo")
+@SequenceGenerator(name="jogoGrupo", sequenceName="sq_jogo_grupo", allocationSize=1)
+public class JogoGrupoRel {
 
     @Id
-    @Column(name="id_regra")
-    @GeneratedValue(generator="regra", strategy = GenerationType.SEQUENCE)
+    @Column(name="id_jogo_grupo")
+    @GeneratedValue(generator="jogoGrupo", strategy = GenerationType.SEQUENCE)
     private Integer id;
-
-    @Column(name="nm_regra")
-    private String name;
-
-    @Column(name="nr_regra")
-    private Integer posicao;
-
-    @Column(name="ds_regra")
-    private String desc;
 
     @Enumerated(EnumType.STRING)
     @Type(type="PostgreSQLEnumType")
-    @Column(name="fl_opcional")
-    private EN_Booleano opcional;
+    @Column(name="fl_valido")
+    private EN_Booleano valido;
+
+    @Column(name="dt_encerramento")
+    private LocalDateTime dtEncerramento;
 
     @Column(name="dt_registro")
     private LocalDateTime dtRegistro;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_jogo")
     private Jogo jogo;
+
+    @ManyToOne
+    @JoinColumn(name="id_grupo")
+    private Grupo grupo;
 
     public void addJogo(Jogo jogo){
         jogo.addToList(this);
     }
 
-    public Regra(Integer id, String name, Integer posicao, String desc, EN_Booleano opcional,
-            LocalDateTime dtRegistro) {
-        this.id = id;
-        this.name = name;
-        this.posicao = posicao;
-        this.desc = desc;
-        this.opcional = opcional;
-        this.dtRegistro = dtRegistro;
-    }
-
-    public Regra(String name, Integer posicao, String desc, EN_Booleano opcional) {
-        this.name = name;
-        this.posicao = posicao;
-        this.desc = desc;
-        this.opcional = opcional;
+    public void addGrupo(Grupo grupo){
+        grupo.addToList(this);
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.sim;
+        }
     }
 
+    public void setDtEncerramento() {
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
+            this.valido = EN_Booleano.nao;
+        }
+    }
+    
 }

@@ -3,16 +3,13 @@ package br.com.almanak.almanakApi.Interface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import br.com.almanak.almanakApi.model.Categoria;
 import br.com.almanak.almanakApi.model.Jogo;
+import br.com.almanak.almanakApi.model.JogoCategoriaRel;
 import br.com.almanak.almanakApi.model.JogoItemRel;
 import br.com.almanak.almanakApi.model.Regra;
-import br.com.almanak.almanakApi.service.JogoService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,62 +19,65 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JogoDTO {
 
-    @JsonIgnore
-    @Autowired
-    JogoService jServiceDTO;
-
     private Integer id;
+    private String imagem;
+    private Integer criador;
     private String name;
-    private Double nota = 0d;
-    private List<String> categorias = new ArrayList<String>();
+    private Double score = 0d;
+    private Integer minJogadores;
+    private Integer maxJogadores;
+    private EN_Booleano paraAdultos;
+    private List<CategoriaDTO> categorias = new ArrayList<CategoriaDTO>();
     private List<RegraDTO> regras = new ArrayList<RegraDTO>();
-    private List<ItensDTO> itens = new ArrayList<ItensDTO>();
+    private List<JogoItemDTO> itens = new ArrayList<JogoItemDTO>();
 
     public JogoDTO convert(Jogo jogo){
-        List<RegraDTO> regras = new ArrayList<RegraDTO>();
-        List<ItensDTO> itens = new ArrayList<ItensDTO>();
-        
+
         this.id = jogo.getId();
+        this.imagem = jogo.getImagem();
+        this.criador = jogo.getUsuario().getId();
         this.name = jogo.getName();
-        this.nota = jogo.getNota();
-        this.categorias = jogo.getNomeCategorias();
+        this.minJogadores = jogo.getMinJogadores();
+        this.maxJogadores = jogo.getMaxJogadores();
+        this.paraAdultos = jogo.getParaAdultos();
+        
+        for(JogoCategoriaRel jc : jogo.getCategorias()){
+            Categoria categoria = jc.getCategoria();
+            categorias.add(new CategoriaDTO().convert(categoria));
+        }
 
         for(Regra r : jogo.getRegras()){
             regras.add(new RegraDTO().convert(r));
         }
-        this.regras = regras;
 
         for(JogoItemRel i : jogo.getItens()){
-            itens.add(new ItensDTO().convert(i));
+            itens.add(new JogoItemDTO().convert(i));
         }
-        this.itens = itens;
 
         return this;
         
     }
 
-    public List<JogoDTO> convertList(List<Jogo> planos){
-        try{
-            List<JogoDTO> dtos = new ArrayList<JogoDTO>();
-            for (Jogo j : planos){
-                dtos.add(new JogoDTO().convert(j));
-            }
-            return dtos;
-        }catch(Exception e){
-            return new ArrayList<JogoDTO>();
-        }
-        
+    public JogoDTO(Integer criador, String name, Integer minJogadores, Integer maxJogadores, EN_Booleano paraAdultos,
+            List<CategoriaDTO> categorias, List<RegraDTO> regras, List<JogoItemDTO> itens) {
+        this.criador = criador;
+        this.name = name;
+        this.minJogadores = minJogadores;
+        this.maxJogadores = maxJogadores;
+        this.paraAdultos = paraAdultos;
+        this.categorias = categorias;
+        this.regras = regras;
+        this.itens = itens;
     }
 
-    public Jogo build(ItemDTO dto){
-        Optional<Jogo> jogo = jServiceDTO.getById(id);
-
-        if(jogo.isEmpty()){
-            return jogo.get();
-        }else{
-            return null;
-        }
-            
+    public JogoDTO(Integer criador, String name, Integer minJogadores, List<CategoriaDTO> categorias,
+            List<RegraDTO> regras, List<JogoItemDTO> itens) {
+        this.criador = criador;
+        this.name = name;
+        this.minJogadores = minJogadores;
+        this.categorias = categorias;
+        this.regras = regras;
+        this.itens = itens;
     }
 
 }

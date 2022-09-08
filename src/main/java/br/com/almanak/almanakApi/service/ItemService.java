@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,31 @@ public class ItemService {
         return repository.findAll(pageable);
     }
 
-    public Optional<Item> getById(Integer id){
+    public Optional<Item> findById(Integer id){
         return repository.findById(id);
     }
 
-    public Optional<Item> findByName(EN_Tipo_Item tipo, String nome){
-        return repository.findByName(tipo, nome);
+    public Optional<Item> findByName(String nome){
+        return repository.findByName(nome);
+    }
+
+    public Optional<List<Item>> listByType(String type){
+
+        for(EN_Tipo_Item tp : EN_Tipo_Item.values()){
+
+            if(tp.toString().equals(type)){
+                System.out.println(tp.toString());
+                return repository.listByType(tp);
+            }
+                
+        }
+
+        return Optional.empty();
+
+    }
+
+    public Optional<List<EN_Tipo_Item>> listDistinctTypes(){
+        return repository.listDistinctTypes();
     }
 
     public void save(Item contrato){

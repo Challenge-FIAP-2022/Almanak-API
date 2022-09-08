@@ -62,5 +62,11 @@ public class JogoCategoriaRel {
         if (this.dtRegistro == null)
             this.dtRegistro = LocalDateTime.now();
     }
-    
+
+    public JogoCategoriaRel(Jogo jogo, Categoria categoria, LocalDateTime dtRegistro) {
+        this.jogo = jogo;
+        this.categoria = categoria;
+        this.dtRegistro = dtRegistro;
+    }
+ 
 }

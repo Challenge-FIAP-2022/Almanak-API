@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -62,7 +63,7 @@ public class Plano {
     private LocalDateTime dtRegistro;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="plano")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="plano", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     public void addToList(Contrato contrato){
@@ -89,11 +90,12 @@ public class Plano {
         this.dtRegistro = dtRegistro;
     }
 
-    public Plano(@NotNull String name, String desc, Double valor, EN_Booleano valido) {
+    public Plano(@NotNull String name, String desc, Double valor) {
         this.name = name;
         this.desc = desc;
         this.valor = valor;
-        this.valido = valido;
+        if(this.getValido() == null)
+            this.valido = EN_Booleano.sim;
     }
 
     public Plano(@NotNull String name, Double valor) {
@@ -106,13 +108,15 @@ public class Plano {
     }
 
     public void setDtRegistro() {
-        if (this.dtRegistro == null)
+        if (this.dtRegistro == null){
             this.dtRegistro = LocalDateTime.now();
+            this.valido = EN_Booleano.sim;
+        }
     }
 
     public void setDtEncerramento() {
-        if (this.dtRegistro == null){
-            this.dtRegistro = LocalDateTime.now();
+        if (this.dtEncerramento == null){
+            this.dtEncerramento = LocalDateTime.now();
             this.valido = EN_Booleano.nao;
         }
     }
