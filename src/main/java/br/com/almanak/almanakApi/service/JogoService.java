@@ -55,6 +55,17 @@ public class JogoService {
         return repository.listByListCategoria(categorias);
     }
 
+    public Optional<List<Jogo>> listRecommended(Integer id){
+        return repository.listRecommended(id);
+    }
+
+    // public Optional<List<Jogo>> listByListFilters(FilterDTO filtroDTO){
+
+    //     String filter = filtroDTO.buildSQLFilter();
+
+    //     return repository.listByListFilters(filter);
+    // }
+
     public void save(Jogo jogo){
         jogo.setDtRegistro();
         repository.save(jogo);

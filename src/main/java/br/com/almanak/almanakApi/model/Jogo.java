@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -48,7 +49,7 @@ public class Jogo {
 
     @Size(max=50)
     @Column(name="lk_imagem")
-    private String link;
+    private String imagem;
 
     @Column(name="nr_min_jogadores")
     private Integer minJogadores;
@@ -89,20 +90,24 @@ public class Jogo {
     private Usuario usuario;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="jogo")
-    private List<JogoCategoriaRel> categorias  = new ArrayList<JogoCategoriaRel>();;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="jogo", cascade = CascadeType.ALL)
+    private List<JogoCategoriaRel> categorias  = new ArrayList<JogoCategoriaRel>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "jogo")
-    private List<Regra> regras = new ArrayList<Regra>();;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "jogo", cascade = CascadeType.ALL)
+    private List<Regra> regras = new ArrayList<Regra>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "jogo")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "jogo", cascade = CascadeType.ALL)
     private List<Avaliacao> avaliacoes = new ArrayList<Avaliacao>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="jogo")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="jogo", cascade = CascadeType.ALL)
     private List<JogoItemRel> itens  = new ArrayList<JogoItemRel>();
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="jogo", cascade = CascadeType.ALL)
+    private List<JogoGrupoRel> grupos  = new ArrayList<JogoGrupoRel>();
 
     public void addUsuario(Usuario usuario){
         usuario.addToList(this);
@@ -126,6 +131,11 @@ public class Jogo {
     public void addToList(JogoItemRel item){
         item.setJogo(this);
         this.itens.add(item);
+    }
+
+    public void addToList(JogoGrupoRel rel){
+        rel.setJogo(this);
+        this.grupos.add(rel);
     }
 
     public Jogo(Integer id, @Size(max = 50) String name, Integer minJogadores, Integer maxJogadores,

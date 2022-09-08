@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -62,7 +63,7 @@ public class Plano {
     private LocalDateTime dtRegistro;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="plano")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="plano", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     public void addToList(Contrato contrato){

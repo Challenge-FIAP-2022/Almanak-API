@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +15,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import br.com.almanak.almanakApi.Interface.CategoriaDTO;
 import br.com.almanak.almanakApi.Interface.JogoDTO;
+import br.com.almanak.almanakApi.Interface.JogoItemDTO;
+import br.com.almanak.almanakApi.Interface.RegraDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
+import br.com.almanak.almanakApi.model.Categoria;
+import br.com.almanak.almanakApi.model.Item;
 import br.com.almanak.almanakApi.model.Jogo;
+import br.com.almanak.almanakApi.model.JogoCategoriaRel;
+import br.com.almanak.almanakApi.model.JogoItemRel;
+import br.com.almanak.almanakApi.model.Regra;
+import br.com.almanak.almanakApi.model.Usuario;
+import br.com.almanak.almanakApi.service.CategoriaService;
+import br.com.almanak.almanakApi.service.ItemService;
 import br.com.almanak.almanakApi.service.JogoService;
+import br.com.almanak.almanakApi.service.UsuarioService;
 import br.com.almanak.almanakApi.utilities.Calculadora;
 
 
@@ -29,6 +44,15 @@ public class JogoController {
 
     @Autowired
     private JogoService service;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private CategoriaService categoriaService;
+
+    @Autowired
+    private ItemService itemService;
  
     @GetMapping
     public Page<Jogo> index(Pageable pageable){
@@ -107,7 +131,7 @@ public class JogoController {
     }
 
     @GetMapping("categoria/{categoria}")
-    public ResponseEntity<List<JogoDTO>> ffindByCategoria(@PathVariable String categoria){
+    public ResponseEntity<List<JogoDTO>> findByCategoria(@PathVariable String categoria){
         Optional<List<Jogo>> opt = service.listByCategoria(categoria);
         
         if(!opt.isEmpty()){
@@ -167,46 +191,129 @@ public class JogoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
     }
+
+    @GetMapping("recomendados/{id}")
+    public ResponseEntity<List<JogoDTO>> listRecommended(@PathVariable Integer id){
+        Optional<List<Jogo>> opt = service.listRecommended(id);
+        
+        if(!opt.isEmpty()){
+            List<Jogo> optList = opt.get();
+            List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
+
+            for(Jogo j : optList){
+                JogoDTO jogoDTO = new JogoDTO().convert(j);
+                Optional<Double> optScore = service.findScore(j.getId());
+
+                if(!optScore.isEmpty()){
+                    Double score = Calculadora.ajusteNota(optScore.get());
+                    jogoDTO.setScore(score);
+                }
+                                
+                jogoDTO.setRegras(null);
+                jogoDTO.setItens(null);
+
+                jogosDTO.add(jogoDTO);
+
+            }
+
+            return ResponseEntity.ok(jogosDTO);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    }
+
+    // @GetMapping("filtro")
+    // public ResponseEntity<List<JogoDTO>> listByListFilters(@RequestBody FilterDTO filtroDTO){
+    //     Optional<List<Jogo>> opt = service.listByListFilters(filtroDTO);
+        
+    //     if(!opt.isEmpty()){
+    //         List<Jogo> optList = opt.get();
+    //         List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
+
+    //         for(Jogo j : optList){
+    //             JogoDTO jogoDTO = new JogoDTO().convert(j);
+    //             Optional<Double> optScore = service.findScore(j.getId());
+
+    //             if(!optScore.isEmpty()){
+    //                 Double score = Calculadora.ajusteNota(optScore.get());
+    //                 jogoDTO.setScore(score);
+    //             }
+                                
+    //             jogoDTO.setRegras(null);
+    //             jogoDTO.setItens(null);
+
+    //             jogosDTO.add(jogoDTO);
+
+    //         }
+
+    //         return ResponseEntity.ok(jogosDTO);
+    //     }
+
+    //     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+    // }
     
-//-----------------------------------------------------------------------------------------------
-/*
     @PostMapping
     public ResponseEntity<JogoDTO> create(@RequestBody @Valid JogoDTO jogoDTO){
 
         Optional<Jogo> opt = service.findByName(jogoDTO.getName());
+        Optional<Usuario> optusuario = usuarioService.getById(jogoDTO.getCriador());
 
-        if(opt.isEmpty()){
+        if(opt.isEmpty() && !optusuario.isEmpty()){
 
-            Categoria jogo  = new Categoria(jogoDTO.getName(), jogoDTO.getIcone(), jogoDTO.getImagem(), jogoDTO.getDesc());
-            service.save(jogo);
-            JogoDTO dto = new JogoDTO().convert(jogo);
-            
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(dto);
+            try{
+                Usuario usuario = optusuario.get();
+
+                Jogo jogo  = new Jogo();
+                jogo.setName(jogoDTO.getName());
+                jogo.setMinJogadores(jogoDTO.getMinJogadores());
+                jogo.setMaxJogadores(jogoDTO.getMaxJogadores());
+                jogo.setParaAdultos(jogoDTO.getParaAdultos());
+                jogo.setValido(EN_Booleano.sim);
+                jogo.setElite(EN_Booleano.nao);
+                jogo.addUsuario(usuario);
+
+                for(CategoriaDTO c : jogoDTO.getCategorias()){
+                    Categoria categoria = categoriaService.findById(c.getId()).get();
+                    JogoCategoriaRel rel = new JogoCategoriaRel();
+                    rel.addCategoria(categoria);
+                    rel.addJogo(jogo);
+                    rel.setDtRegistro();
+                }
+
+                for(RegraDTO r : jogoDTO.getRegras()){
+                    Regra regra = new Regra();
+                    regra.setName(r.getNome());
+                    regra.setPosicao(r.getPosicao());
+                    regra.setDesc(r.getDesc());
+                    regra.setOpcional(r.getOpcional());                    
+                    regra.addJogo(jogo);
+                    regra.setDtRegistro();
+                }
+
+                for(JogoItemDTO ji : jogoDTO.getItens()){
+                    JogoItemRel rel = new JogoItemRel(ji.getQtd(), ji.getNecessario());
+                    Item item = itemService.findById(ji.getItem().getId()).get();
+                    rel.addItem(item);
+                    rel.addJogo(jogo);
+                    rel.setDtRegistro();
+                }
+    
+                service.save(jogo);
+                JogoDTO dto = new JogoDTO().convert(jogo);
+                
+                return ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(dto);
+
+            }catch(Exception e){
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+            }
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-    @PutMapping()
-    public ResponseEntity<JogoDTO> update(@RequestBody @Valid Jogo newJogo){
-        Optional<Categoria> opt = service.findById(newJogo.getId());
-
-        if(opt.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        Categoria categoria = opt.get();
-        BeanUtils.copyProperties(newJogo, categoria);
-
-        service.save(categoria);
-        Optional<JogoDTO> dto = Optional.of(new JogoDTO().convert(categoria));
-
-        return ResponseEntity.of(dto);
-        
-    }
- */
-//-----------------------------------------------------------------------------------------------
 
     @DeleteMapping("nome/{nome}")
     public ResponseEntity<Jogo> destroyByName(@PathVariable String nome){
