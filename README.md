@@ -1,5 +1,15 @@
 # Documentação AlmanaK API
 
+## Integrantes do Grupo
+- Bianca Man Tchuin Chang Lee (RM: 89171)
+- Danilo Zequim de Moura (RM: 89045)
+- Eric Brianez Giannetti (RM: 87087)
+- Matheus Pismel de Jeronymo (RM: 86931)
+- Otavio de Magalhães Gomes (RM: 87680)
+- Zack Lorenzzo Corrêa (RM: 87149)
+<hr>
+<br>
+
 ## Disclaimer
 Como o referido projeto está vinculado a uma base de dados de produção, os dados obtidos como respostas de cada requisição 
 podem variar de acordo com a interação dos demais usuários.
