@@ -1,8 +1,8 @@
 {
     "_type": "export",
     "__export_format": 4,
-    "__export_date": "2022-09-07T17:28:21.963Z",
-    "__export_source": "insomnia.desktop.app:v2022.5.1",
+    "__export_date": "2022-09-29T02:22:01.837Z",
+    "__export_source": "insomnia.desktop.app:v2022.6.0",
     "resources": [{
         "_id": "req_206ea78a3cfc4f8280b94cdefd5fcb01",
         "parentId": "fld_fbc2d68396eb4f86a568319a9987898a",
@@ -80,9 +80,9 @@
     }, {
         "_id": "req_29ca540ec8d2488e80d560b55ea41c7b",
         "parentId": "fld_fbc2d68396eb4f86a568319a9987898a",
-        "modified": 1662319137905,
+        "modified": 1663113358922,
         "created": 1661768166131,
-        "url": "{{ _.base_url }}/usuario/adj/26",
+        "url": "{{ _.base_url }}/usuario/adj/5",
         "name": "Find by Id Full",
         "description": "",
         "method": "GET",
@@ -763,7 +763,7 @@
     }, {
         "_id": "req_0e3b12002a4f4b9aa9efa98072e4ba9a",
         "parentId": "fld_d6b604c09b93430ab6024913d76abb2f",
-        "modified": 1661743763108,
+        "modified": 1664077928483,
         "created": 1661632530312,
         "url": "{{ _.base_url }}/jogo",
         "name": "List All",
@@ -773,12 +773,12 @@
         "parameters": [{
             "id": "pair_5da9afebf5a94d3880f818501c948e94",
             "name": "page",
-            "value": "0",
+            "value": "1",
             "description": ""
         }, {
             "id": "pair_87fbf10ac56e42be89263364670ef955",
             "name": "size",
-            "value": "1",
+            "value": "3",
             "description": ""
         }],
         "headers": [],
@@ -872,7 +872,7 @@
     }, {
         "_id": "req_455c032053ad45b780d59a99dbe75959",
         "parentId": "fld_d6b604c09b93430ab6024913d76abb2f",
-        "modified": 1662569913963,
+        "modified": 1664073107045,
         "created": 1662079109169,
         "url": "{{ _.base_url }}/jogo/categoria",
         "name": "List By Categories Names",
@@ -945,7 +945,7 @@
     }, {
         "_id": "req_c4732366ca3440aeb345f770cc1ba454",
         "parentId": "fld_d6b604c09b93430ab6024913d76abb2f",
-        "modified": 1662569921170,
+        "modified": 1664417405254,
         "created": 1662345245211,
         "url": "{{ _.base_url }}/jogo/filtro",
         "name": "List by Filter",
@@ -953,7 +953,7 @@
         "method": "GET",
         "body": {
             "mimeType": "application/json",
-            "text": "{\n\t\"maioridade\": \"nao\",\n\t\"jogadores\": 1,\n\t\"categorias\": [\n\t\t\t\"Esporte\",\n\t\t\t\"Jogos de cartas\"\n\t\t],\n\t\"itens\": null\n}"
+            "text": "{\n\t\"maioridade\": \"nao\",\n\t\"jogadores\": 6,\n\t\"categorias\": [\n\t\t\"Ao ar livre\"\n\t],\n\t\"itens\": null\n}"
         },
         "parameters": [],
         "headers": [{
@@ -974,7 +974,7 @@
     }, {
         "_id": "req_2ddae4a5b3c94d88b5f13c01e82262f6",
         "parentId": "fld_d6b604c09b93430ab6024913d76abb2f",
-        "modified": 1662562557813,
+        "modified": 1664073958908,
         "created": 1661632590830,
         "url": "{{ _.base_url }}/jogo",
         "name": "Criar",
@@ -1392,7 +1392,7 @@
     }, {
         "_id": "req_242c7aea00ff482083f08bef32ea3ca7",
         "parentId": "fld_36434e708818491886af2cc57b34ab55",
-        "modified": 1662562917470,
+        "modified": 1663996629920,
         "created": 1662562600215,
         "url": "https://almanak.mybluemix.net/chatbot/teste",
         "name": "Custom Message",
@@ -1433,10 +1433,29 @@
     }, {
         "_id": "jar_a059d1a05dad4e06ba6a09edfbc4ae2b",
         "parentId": "wrk_b12bfe8cbfae4defbcef45adcde7fbc1",
-        "modified": 1661136938109,
+        "modified": 1664417191508,
         "created": 1661136938109,
         "name": "Default Jar",
-        "cookies": [],
+        "cookies": [{
+            "key": "MoodleSession",
+            "value": "7qfh9a0okaej06b3uohod6rlrj",
+            "domain": "on.fiap.com.br",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2022-09-12T04:25:30.853Z",
+            "lastAccessed": "2022-09-12T04:25:30.855Z",
+            "id": "4792927044416504"
+        }, {
+            "key": "JSESSIONID",
+            "value": "E027E3A53BEA8E8F644FC28CEBAF989F",
+            "domain": "localhost",
+            "path": "/",
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2022-09-29T02:06:31.502Z",
+            "lastAccessed": "2022-09-29T02:06:31.502Z",
+            "id": "7391330657034485"
+        }],
         "_type": "cookie_jar"
     }, {
         "_id": "spc_a02d2f6e646943348fb45b359b67bdbd",
@@ -1450,7 +1469,7 @@
     }, {
         "_id": "env_44bd20d3884c4176baada79bbbeb46ef",
         "parentId": "env_3810c046be444164ae2709b84929268a",
-        "modified": 1662324264145,
+        "modified": 1663101499907,
         "created": 1661229063872,
         "name": "almanak",
         "data": {
@@ -1467,7 +1486,7 @@
     }, {
         "_id": "env_24ee23c8ff5b412c8b687392f036a3a8",
         "parentId": "env_3810c046be444164ae2709b84929268a",
-        "modified": 1662324263090,
+        "modified": 1663101500863,
         "created": 1661277203427,
         "name": "localHost",
         "data": {
