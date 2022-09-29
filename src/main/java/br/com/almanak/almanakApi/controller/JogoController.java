@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.almanak.almanakApi.Interface.CategoriaDTO;
+import br.com.almanak.almanakApi.Interface.FilterDTO;
 import br.com.almanak.almanakApi.Interface.JogoDTO;
 import br.com.almanak.almanakApi.Interface.JogoItemDTO;
 import br.com.almanak.almanakApi.Interface.RegraDTO;
@@ -223,36 +224,36 @@ public class JogoController {
 
     }
 
-    // @GetMapping("filtro")
-    // public ResponseEntity<List<JogoDTO>> listByListFilters(@RequestBody FilterDTO filtroDTO){
-    //     Optional<List<Jogo>> opt = service.listByListFilters(filtroDTO);
+    @GetMapping("filtro")
+    public ResponseEntity<List<JogoDTO>> listByListFilters(@RequestBody FilterDTO filtroDTO){
+        Optional<List<Jogo>> opt = service.listByListFilters(filtroDTO);
         
-    //     if(!opt.isEmpty()){
-    //         List<Jogo> optList = opt.get();
-    //         List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
+        if(!opt.isEmpty()){
+            List<Jogo> optList = opt.get();
+            List<JogoDTO> jogosDTO = new ArrayList<JogoDTO>();
 
-    //         for(Jogo j : optList){
-    //             JogoDTO jogoDTO = new JogoDTO().convert(j);
-    //             Optional<Double> optScore = service.findScore(j.getId());
+            for(Jogo j : optList){
+                JogoDTO jogoDTO = new JogoDTO().convert(j);
+                Optional<Double> optScore = service.findScore(j.getId());
 
-    //             if(!optScore.isEmpty()){
-    //                 Double score = Calculadora.ajusteNota(optScore.get());
-    //                 jogoDTO.setScore(score);
-    //             }
+                if(!optScore.isEmpty()){
+                    Double score = Calculadora.ajusteNota(optScore.get());
+                    jogoDTO.setScore(score);
+                }
                                 
-    //             jogoDTO.setRegras(null);
-    //             jogoDTO.setItens(null);
+                jogoDTO.setRegras(null);
+                jogoDTO.setItens(null);
 
-    //             jogosDTO.add(jogoDTO);
+                jogosDTO.add(jogoDTO);
 
-    //         }
+            }
 
-    //         return ResponseEntity.ok(jogosDTO);
-    //     }
+            return ResponseEntity.ok(jogosDTO);
+        }
 
-    //     return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-    // }
+    }
     
     @PostMapping
     public ResponseEntity<JogoDTO> create(@RequestBody @Valid JogoDTO jogoDTO){

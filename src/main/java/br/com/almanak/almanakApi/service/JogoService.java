@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.almanak.almanakApi.Interface.FilterDTO;
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
 import br.com.almanak.almanakApi.model.Jogo;
 import br.com.almanak.almanakApi.repository.JogoRepository;
@@ -59,12 +61,56 @@ public class JogoService {
         return repository.listRecommended(id);
     }
 
-    // public Optional<List<Jogo>> listByListFilters(FilterDTO filtroDTO){
+    public Optional<List<Jogo>> listByListFilters(FilterDTO filtro){
 
-    //     String filter = filtroDTO.buildSQLFilter();
+        List<List<Jogo>> todasListas = new ArrayList<List<Jogo>>();
+        
+        Optional<List<Jogo>> optJogosIdade = repository.listByAgeLimit(filtro.getMaioridade());
+        Optional<List<Jogo>> optJogosJogadores = repository.listByPlayers(filtro.getJogadores());
+        Optional<List<Jogo>> optJogosCategorias = repository.listByListCategoria(filtro.getCategorias());
+        Optional<List<Jogo>> optJogosItens = repository.listByListIten(filtro.getItens());
 
-    //     return repository.listByListFilters(filter);
-    // }
+        List<Jogo> jogosIdade = new ArrayList<Jogo>();
+        List<Jogo> jogosJogadores = new ArrayList<Jogo>();
+        List<Jogo> jogosCategorias = new ArrayList<Jogo>();
+        List<Jogo> jogosItens = new ArrayList<Jogo>();
+
+        if(!optJogosIdade.isEmpty() && optJogosIdade.get().size() != 0){
+            jogosIdade = optJogosIdade.get();
+            todasListas.add(jogosIdade);
+        }
+            
+        if(!optJogosJogadores.isEmpty() && optJogosJogadores.get().size() != 0){
+            jogosJogadores = optJogosJogadores.get();
+            todasListas.add(jogosJogadores);
+        }
+            
+        if(!optJogosCategorias.isEmpty() && optJogosCategorias.get().size() != 0){
+            jogosCategorias = optJogosCategorias.get();
+            todasListas.add(jogosCategorias);
+        }
+            
+        if(!optJogosItens.isEmpty() && optJogosItens.get().size() != 0){
+            jogosItens = optJogosItens.get();
+            todasListas.add(jogosItens);
+        }
+            
+        if(todasListas.size() == 0 || todasListas.size() == 1){
+            return Optional.empty();
+        }else{
+
+            List<Jogo> resultados = todasListas.get(0);
+
+            for(List<Jogo> l : todasListas){
+
+                resultados.retainAll(l);
+
+            }
+
+            return Optional.of(resultados);
+        }
+        
+    }
 
     public void save(Jogo jogo){
         jogo.setDtRegistro();
