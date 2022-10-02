@@ -49,7 +49,7 @@ public interface JogoRepository extends JpaRepository<Jogo, Integer> {
     @Query(value="select j from Jogo j join fetch j.categorias cr join fetch cr.categoria c where c.name in (?1)", nativeQuery = false) 
     Optional<List<Jogo>> listByListCategoria(List<String> categorias);
 
-    @Query(value="select * from tb_jogo j left join tb_jogo_item ji on j.id_jogo = ji.id_jogo left join tb_item i on ji.id_item = i.id_item where lower(i.nm_item) = lower(?1)", nativeQuery = true) 
+    @Query(value="select * from tb_jogo j left join tb_jogo_item ji on j.id_jogo = ji.id_jogo left join tb_item i on ji.id_item = i.id_item where lower(i.tp_item) = lower(?1)", nativeQuery = true) 
     Optional<List<Jogo>> listByIten(String itens);
 
     @Query(value="select j from Jogo j join fetch j.itens ir join fetch ir.item i where i.name in (?1)", nativeQuery = false) 
