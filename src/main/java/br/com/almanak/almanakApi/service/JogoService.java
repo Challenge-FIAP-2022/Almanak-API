@@ -95,7 +95,7 @@ public class JogoService {
             todasListas.add(jogosItens);
         }
             
-        if(todasListas.size() == 0 || todasListas.size() == 1){
+        if(todasListas.size() == 0){
             return Optional.empty();
         }else{
 
