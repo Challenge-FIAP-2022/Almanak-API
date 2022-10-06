@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.almanak.almanakApi.Interface.AvaliacaoDTO;
 import br.com.almanak.almanakApi.model.Avaliacao;
 import br.com.almanak.almanakApi.service.AvaliacaoService;
 
@@ -22,14 +24,24 @@ public class AvaliacaoController {
     private AvaliacaoService service;
 
     @GetMapping("jogo/{id}")
-    public ResponseEntity<List<Avaliacao>> findById(@PathVariable Integer id){
+    public ResponseEntity<List<AvaliacaoDTO>> findById(@PathVariable Integer id){
 
-        System.out.println(id);
+        Optional<List<Avaliacao>> optList = service.listByGame(id);
+        List<AvaliacaoDTO> dtoList = new ArrayList<AvaliacaoDTO>();
 
-        Optional<List<Avaliacao>> opt = service.listByGame(id);
+        if(!optList.isEmpty() && optList.get().size() > 0){
 
-        if(!opt.isEmpty())
-            return ResponseEntity.of(opt);
+            for(Avaliacao a : optList.get()){
+
+                AvaliacaoDTO avaliacaoDTO = new AvaliacaoDTO().convert(a);
+                dtoList.add(avaliacaoDTO);
+
+            }
+
+            return ResponseEntity.ok().body(dtoList);
+
+        }
+            
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 

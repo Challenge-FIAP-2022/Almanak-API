@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class UsuarioDTO {
 
     private Integer id;
+    private String nome;
     private Boolean maioridade;
     private Integer grupo;
     private PlanoDTO plano;
@@ -18,6 +19,7 @@ public class UsuarioDTO {
     public UsuarioDTO convert(Usuario usuario){
 
         this.id = usuario.getId();
+        this.nome = usuario.getName();
         usuario.setMaioridade();
         this.maioridade = usuario.isMaioridade();
         this.grupo = usuario.getGrupoValido().getId();
