@@ -29,9 +29,6 @@ public class SecurityConfiguration{
                 // Login
                 .antMatchers(HttpMethod.POST, "/api/auth").permitAll()
                 
-                // h2
-                .antMatchers("/h2-console/**").permitAll()
-                
                 // web
                 .antMatchers(HttpMethod.GET, "/task").authenticated()
                 .antMatchers(HttpMethod.GET, "/task/delete/**").hasRole("ADMIN")

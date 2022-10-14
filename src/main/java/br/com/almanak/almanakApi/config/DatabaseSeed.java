@@ -24,10 +24,15 @@ public class DatabaseSeed implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        usuarioRepository.save(new Usuario("Almanak", "email@email.com.br", passwordEncoder.encode("123456"), LocalDate.now()));
+        usuarioRepository.save(new Usuario("Almanak", 
+                                            "email@email.com.br", 
+                                            passwordEncoder.encode("123456"), 
+                                            new Role("ROLE_USER")));
 
-
-        usuarioRepository.save(new Usuario("Pedro", "pedro@email.com.br", passwordEncoder.encode("123456"), LocalDate.now()));
+        usuarioRepository.save(new Usuario("Pedro", 
+                                            "pedro@email.com.br", 
+                                            passwordEncoder.encode("123456"), 
+                                            new Role("ROLE_USER")));
         
     }
     

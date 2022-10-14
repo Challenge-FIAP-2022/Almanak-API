@@ -16,6 +16,8 @@ public class Role implements GrantedAuthority {
 
     private String name;
 
+    private Role role;
+
     public Role() {
     }
 
@@ -43,5 +45,7 @@ public class Role implements GrantedAuthority {
     public String getAuthority() {
         return this.name;
     }
-
+    public void setRole(Role role) {
+         this.role = role;
+    }
 }

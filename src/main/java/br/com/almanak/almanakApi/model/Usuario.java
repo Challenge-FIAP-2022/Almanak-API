@@ -87,6 +87,11 @@ public class Usuario implements UserDetails{
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<UsuarioGrupoRel> grupos  = new ArrayList<UsuarioGrupoRel>();
 
+    private br.com.almanak.almanakApi.model.Role role;
+
+    public void Role(Role role) {
+        this.Role(role);
+    }
 
     public void getName(String name) {
         this.name = name;
@@ -169,6 +174,14 @@ public class Usuario implements UserDetails{
         this.senha = senha;
         this.dtNascimento = dtNascimento;
         this.dtRegistro = dtRegistro;
+    }
+
+    public Usuario(@Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
+            @Size(max = 20) String senha, Role role) {
+        this.name = name;
+        this.email = email;
+        this.senha = senha;
+        this.role = role;
     }
 
     public void setDtRegistro() {
