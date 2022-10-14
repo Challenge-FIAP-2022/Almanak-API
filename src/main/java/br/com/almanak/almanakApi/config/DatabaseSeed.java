@@ -27,7 +27,7 @@ public class DatabaseSeed implements CommandLineRunner {
         usuarioRepository.save(new Usuario("Almanak", 
                                             "email@email.com.br", 
                                             passwordEncoder.encode("123456"), 
-                                            new Role("ROLE_USER")));
+                                            new Role("ROLE_ADMIN")));
 
         usuarioRepository.save(new Usuario("Pedro", 
                                             "pedro@email.com.br", 

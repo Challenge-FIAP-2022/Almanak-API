@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.config.security;
 
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,20 +22,16 @@ public class SecurityConfiguration{
             .authorizeHttpRequests() 
  
                 // Usuários
-                .antMatchers(HttpMethod.GET, "/api/user/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/user").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/user/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/user/**").authenticated()
-                
-                // Login
-                .antMatchers(HttpMethod.POST, "/api/auth").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/usuario/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/usuario/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/usuario/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/usuario/**").authenticated()
                 
                 // web
-                .antMatchers(HttpMethod.GET, "/task").authenticated()
-                .antMatchers(HttpMethod.GET, "/task/delete/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/task").hasRole("ADMIN")
-
-                .antMatchers("/css/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/**").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
 
                 .anyRequest().denyAll()
             .and()
@@ -49,16 +46,6 @@ public class SecurityConfiguration{
         ;        
         return http.build();
     }
-
-    // @Bean
-    // public UserDetailsService users(){
-    //     UserDetails user = User.builder()
-    //         .username("joao@fiap.com.br")
-    //         .password("$2a$12$M/5qLATTID2BzOT66Z1reegfi60a4Ejf/DNx18DdzMPVpWYozXwVm")
-    //         .roles("USER")
-    //         .build();
-    //     return new InMemoryUserDetailsManager(user);
-    // }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
