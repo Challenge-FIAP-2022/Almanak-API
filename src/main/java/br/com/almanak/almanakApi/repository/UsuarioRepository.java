@@ -15,6 +15,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> login(String email, String senha);
 
     @Query(value="select ds_email from tb_usuario where ds_email = ?1", nativeQuery = true) 
-    Optional<String> findByEmail(String email);
+    Optional<Usuario> findByEmail(String email);
 
 }

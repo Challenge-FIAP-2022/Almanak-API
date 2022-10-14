@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,6 +21,9 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.almanak.almanakApi.enumerator.EN_Booleano;
@@ -34,7 +38,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="tb_usuario")
 @SequenceGenerator(name="usuario", sequenceName="sq_usuario", allocationSize=1)
-public class Usuario {
+public class Usuario implements UserDetails{
    
     @Id
     @Column(name="id_usuario")
@@ -82,6 +86,23 @@ public class Usuario {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<UsuarioGrupoRel> grupos  = new ArrayList<UsuarioGrupoRel>();
+
+
+    public void getName(String name) {
+        this.name = name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void getSenha(String senha) {
+        this.senha = senha;
+    }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+
+
 
     public void addToList(Contrato contrato){
         contrato.setUsuario(this);
@@ -185,6 +206,41 @@ public class Usuario {
         
         return grupo;
 
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public String getPassword() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public String getUsername() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    @Override
+    public boolean isAccountNonExpired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    @Override
+    public boolean isEnabled() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }
