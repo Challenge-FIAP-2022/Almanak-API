@@ -106,9 +106,6 @@ public class Usuario implements UserDetails{
         this.senha = senha;
     }
 
-
-
-
     public void addToList(Contrato contrato){
         contrato.setUsuario(this);
         this.getContratos().add(contrato);

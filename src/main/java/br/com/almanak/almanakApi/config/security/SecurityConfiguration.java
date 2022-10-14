@@ -36,13 +36,9 @@ public class SecurityConfiguration{
                 .anyRequest().denyAll()
             .and()
                 .csrf().disable()
-                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            //.and()
                 .headers().frameOptions().disable()
             .and()
                 .formLogin()
-                //.loginPage("/meulogin")
-                //.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
         ;        
         return http.build();
     }
