@@ -14,27 +14,25 @@ public class SecurityConfiguration{
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
         http.httpBasic()
-        .and()
-            .authorizeHttpRequests() 
- 
+            .and()
+                .authorizeHttpRequests() 
                 // Usuários
                 .antMatchers(HttpMethod.GET, "/api/usuario/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/usuario/**").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/usuario/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/usuario/**").hasRole("ADMIN")
-                
                 // web
-                .antMatchers(HttpMethod.GET, "/api/**").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
-
+                // .antMatchers(HttpMethod.GET, "/api/**").authenticated()
+                // .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                // .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                // .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+                // Others
                 .anyRequest().denyAll()
-        .and()
-            .csrf().disable()
-            //     .headers().frameOptions().disable()
-            // .and()
-            //     .formLogin()
+            .and()
+                .csrf().disable()
+                //     .headers().frameOptions().disable()
+                // .and()
+                //     .formLogin()
         ;        
         return http.build();
     }
