@@ -20,30 +20,30 @@ public class TokenService {
     @Autowired
     UsuarioRepository repository;
 
-    @Value("${almanak.jwt.secret}")
-    String secret;
+    // @Value("${almanak.jwt.secret}")
+    // String secret;
 
-    public boolean validate(String token) {
+    // public boolean validate(String token) {
 
-        try{
-            JWT.require(Algorithm.HMAC512("secret")).build().verify(token);
-            return true;
-        }catch(Exception e){
-            return false;
-        }
+    //     try{
+    //         JWT.require(Algorithm.HMAC512("secret")).build().verify(token);
+    //         return true;
+    //     }catch(Exception e){
+    //         return false;
+    //     }
 
-    }
+    // }
 
-    public Authentication getAuthenticationToken(String token) {
-        String email = JWT.require(Algorithm.HMAC512("secret")).build().verify(token).getSubject();
+    // public Authentication getAuthenticationToken(String token) {
+    //     String email = JWT.require(Algorithm.HMAC512("secret")).build().verify(token).getSubject();
         
-        Optional<Usuario> optional = repository.findByEmail(email);
-        if (optional.isEmpty()) return null;
-        var user = optional.get();
-        Authentication authentication = 
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    //     Optional<Usuario> optional = repository.findByEmail(email);
+    //     if (optional.isEmpty()) return null;
+    //     var user = optional.get();
+    //     Authentication authentication = 
+    //             new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         
-        return authentication;
-    }
+    //     return authentication;
+    // }
     
 }

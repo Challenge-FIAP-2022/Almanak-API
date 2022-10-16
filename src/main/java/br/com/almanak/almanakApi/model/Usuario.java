@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -23,6 +24,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -68,7 +70,7 @@ public class Usuario implements UserDetails{
     private boolean maioridade;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
@@ -87,24 +89,9 @@ public class Usuario implements UserDetails{
     @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<UsuarioGrupoRel> grupos  = new ArrayList<UsuarioGrupoRel>();
 
-    private br.com.almanak.almanakApi.model.Role role;
-
-    public void Role(Role role) {
-        this.Role(role);
-    }
-
-    public void getName(String name) {
-        this.name = name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void getSenha(String senha) {
-        this.senha = senha;
-    }
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<Role> roles = new ArrayList<>();
 
     public void addToList(Contrato contrato){
         contrato.setUsuario(this);
@@ -174,11 +161,11 @@ public class Usuario implements UserDetails{
     }
 
     public Usuario(@Size(max = 50) String name, @NotBlank @Size(min = 12, max = 50) String email,
-            @Size(max = 20) String senha, Role role) {
+            @Size(max = 20) String senha, List<Role> roles) {
         this.name = name;
         this.email = email;
         this.senha = senha;
-        this.role = role;
+        this.roles = roles;
     }
 
     public void setDtRegistro() {
@@ -217,40 +204,48 @@ public class Usuario implements UserDetails{
         return grupo;
 
     }
+
+    public Usuario withRole(Role role){
+        Assert.notNull(role, "role is required");
+        this.roles.add(role);
+        return this;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.roles;
     }
+
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
-        return null;
+        return senha;
     }
+
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
-        return null;
+        return email;
     }
+
     @Override
     public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
+
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
+
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
+
     @Override
     public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
+
+    
 
 }

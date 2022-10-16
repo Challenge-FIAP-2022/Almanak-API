@@ -44,6 +44,13 @@ public class UsuarioController {
     public Page<Usuario> index(Pageable pageable){
         return service.listAll(pageable);
     }
+
+    @GetMapping("teste")
+    public Usuario teste(){
+        Usuario usuario = service.getById(1).get();
+        usuario.getRoles();
+        return usuario;
+    }
             
     @GetMapping("{id}")
     public ResponseEntity<UsuarioDTO> show(@PathVariable Integer id){
@@ -134,22 +141,18 @@ public class UsuarioController {
     
     @PutMapping()
     public ResponseEntity<UsuarioDTO> update(@RequestBody @Valid Usuario newUsuario){
-        Integer id = newUsuario.getId();
+        
         var opt = service.getById(newUsuario.getId());
 
         if(!opt.isEmpty()){
             Usuario usuario = opt.get();
 
-            var optEmail = service.findByEmail(newUsuario.getEmail());
-
-            if(optEmail.isEmpty())
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-            BeanUtils.copyProperties(newUsuario, usuario);
-            usuario.setId(id);
+            BeanUtils.copyProperties(newUsuario, usuario, new String [] {"id", "senha"});
 
             service.save(usuario);
+
             Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            
             return ResponseEntity.of(dto);
 
         }else{
