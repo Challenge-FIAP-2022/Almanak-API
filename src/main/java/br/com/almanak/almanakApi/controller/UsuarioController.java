@@ -45,11 +45,22 @@ public class UsuarioController {
         return service.listAll(pageable);
     }
 
-    @GetMapping("teste")
-    public Usuario teste(){
-        Usuario usuario = service.getById(1).get();
-        usuario.getRoles();
-        return usuario;
+    @PostMapping("teste/{id}")
+    public ResponseEntity<Usuario> teste(@PathVariable Integer id){
+
+        Optional<Usuario> opt = service.getById(id);
+
+        if(!opt.isEmpty()){
+            Usuario usuario = opt.get();
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+            System.out.println(usuario.toString());
+            service.save(usuario);
+            return ResponseEntity.ok().build();
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
+
     }
             
     @GetMapping("{id}")

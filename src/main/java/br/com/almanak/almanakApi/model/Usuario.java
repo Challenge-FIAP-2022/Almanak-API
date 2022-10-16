@@ -56,7 +56,7 @@ public class Usuario implements UserDetails{
     @Column(name="ds_email")
     private String email;
 
-    @Size(max=20)
+    @Size(max=50)
     @Column(name="ds_senha")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;

@@ -2,7 +2,6 @@ package br.com.almanak.almanakApi.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,18 +15,23 @@ public class SecurityConfiguration{
         http.httpBasic()
             .and()
                 .authorizeHttpRequests() 
+
                 // Usuários
-                .antMatchers(HttpMethod.GET, "/api/usuario/**").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/usuario/**").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/usuario/**").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/usuario/**").hasRole("ADMIN")
+                // .antMatchers(HttpMethod.GET, "/api/usuario/**").authenticated()
+                // .antMatchers(HttpMethod.POST, "/api/usuario/**").authenticated()
+                // .antMatchers(HttpMethod.PUT, "/api/usuario/**").authenticated()
+                // .antMatchers(HttpMethod.DELETE, "/api/usuario/**").hasRole("ADMIN")
+
+                .anyRequest().permitAll()
+
                 // web
                 // .antMatchers(HttpMethod.GET, "/api/**").authenticated()
                 // .antMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
                 // .antMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
                 // .antMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
                 // Others
-                .anyRequest().denyAll()
+                // .anyRequest().denyAll()
+
             .and()
                 .csrf().disable()
                 //     .headers().frameOptions().disable()
