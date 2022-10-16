@@ -71,7 +71,7 @@ public class Usuario implements UserDetails{
     private boolean maioridade;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
