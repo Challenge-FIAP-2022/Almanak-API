@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,12 +36,15 @@ public class UsuarioController {
 
     @Autowired
     private AtividadeService atividadeService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
     
     @GetMapping
     public Page<Usuario> index(Pageable pageable){
         return service.listAll(pageable);
     }
-
+            
     @GetMapping("{id}")
     public ResponseEntity<UsuarioDTO> show(@PathVariable Integer id){
         Optional<Usuario> opt = service.getById(id);
@@ -60,6 +64,7 @@ public class UsuarioController {
 
     @GetMapping("login")
     public ResponseEntity<UsuarioDTO> login(@RequestParam String email,@RequestParam String senha){
+        senha = passwordEncoder.encode(senha);
         var optional = service.login(email,senha);
 
         if(!optional.isEmpty()){
@@ -105,7 +110,8 @@ public class UsuarioController {
         var optional = service.findByEmail(usuario.getEmail());
 
         if(optional.isEmpty()){
-
+            
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
             service.save(usuario);
             atividadeService.login(usuario);
             
@@ -128,22 +134,18 @@ public class UsuarioController {
     
     @PutMapping()
     public ResponseEntity<UsuarioDTO> update(@RequestBody @Valid Usuario newUsuario){
-        Integer id = newUsuario.getId();
+        
         var opt = service.getById(newUsuario.getId());
 
         if(!opt.isEmpty()){
             Usuario usuario = opt.get();
 
-            var optEmail = service.findByEmail(newUsuario.getEmail());
-
-            if(optEmail.isEmpty())
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-            BeanUtils.copyProperties(newUsuario, usuario);
-            usuario.setId(id);
+            BeanUtils.copyProperties(newUsuario, usuario, new String [] {"id", "senha"});
 
             service.save(usuario);
+
             Optional<UsuarioDTO> dto = Optional.of(new UsuarioDTO().convert(usuario));
+            
             return ResponseEntity.of(dto);
 
         }else{

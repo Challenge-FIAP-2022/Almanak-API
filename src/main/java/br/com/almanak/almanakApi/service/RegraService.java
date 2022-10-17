@@ -1,5 +1,6 @@
 package br.com.almanak.almanakApi.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,10 @@ public class RegraService {
 
     public Page<Regra> listAll(Pageable pageable){
         return repository.findAll(pageable);
+    }
+
+    public Optional<List<Regra>> listResponse(Integer id, String jsonString){
+        return repository.listResponse(id, jsonString);
     }
 
     public Optional<Regra> getById(Integer id){
