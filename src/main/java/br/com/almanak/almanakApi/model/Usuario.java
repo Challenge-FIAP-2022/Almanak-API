@@ -52,11 +52,9 @@ public class Usuario implements UserDetails{
     private String name;
 
     @NotBlank
-    @Size(min=12, max=50)
     @Column(name="ds_email")
     private String email;
 
-    @Size(max=50)
     @Column(name="ds_senha")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
@@ -71,7 +69,7 @@ public class Usuario implements UserDetails{
     private boolean maioridade;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<Contrato> contratos = new ArrayList<Contrato>();
 
     @JsonIgnore
@@ -91,7 +89,7 @@ public class Usuario implements UserDetails{
     private List<UsuarioGrupoRel> grupos  = new ArrayList<UsuarioGrupoRel>();
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="usuario", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="usuario", cascade = CascadeType.ALL)
     private List<UsuarioRoleRel> roles = new ArrayList<>();
 
     public void addToList(Contrato contrato){
@@ -271,7 +269,5 @@ public class Usuario implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
-
-    
 
 }

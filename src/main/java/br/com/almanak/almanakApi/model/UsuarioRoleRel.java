@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +27,6 @@ public class UsuarioRoleRel {
     @GeneratedValue(generator="usuariorole", strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="id_usuario")
     private Usuario usuario;

@@ -39,7 +39,7 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="role", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="role", cascade = CascadeType.ALL)
     private List<UsuarioRoleRel> roles = new ArrayList<>();
 
     public Role(String name) {

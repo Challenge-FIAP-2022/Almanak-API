@@ -44,24 +44,6 @@ public class UsuarioController {
     public Page<Usuario> index(Pageable pageable){
         return service.listAll(pageable);
     }
-
-    @PostMapping("teste/{id}")
-    public ResponseEntity<Usuario> teste(@PathVariable Integer id){
-
-        Optional<Usuario> opt = service.getById(id);
-
-        if(!opt.isEmpty()){
-            Usuario usuario = opt.get();
-            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-            System.out.println(usuario.toString());
-            service.save(usuario);
-            return ResponseEntity.ok().build();
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        
-
-    }
             
     @GetMapping("{id}")
     public ResponseEntity<UsuarioDTO> show(@PathVariable Integer id){
