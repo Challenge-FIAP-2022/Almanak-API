@@ -34,7 +34,7 @@ public class UsuarioService {
         return Optional.of(optional.get());
     }
 
-    public Optional<String> findByEmail(String email){
+    public Optional<Usuario> findByEmail(String email){
         return repository.findByEmail(email);
     }
 
